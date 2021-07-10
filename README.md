@@ -1,7 +1,7 @@
 # Blood_cell_classification_kaggle
 
 [Kaggle Challenge](https://www.kaggle.com/paultimothymooney/blood-cells/discussion/91482) |
-[Sample Implementation (TF)](https://www.kaggle.com/rahulsingh731/blood-cell-classification) |
+[Sample Implementation (TF)](https://www.kaggle.com/rahulsingh731/blood-cell-classification) 
 
 ## [Dataset](https://www.kaggle.com/paultimothymooney/blood-cells/download)
 
