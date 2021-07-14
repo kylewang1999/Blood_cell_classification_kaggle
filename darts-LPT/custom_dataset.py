@@ -46,15 +46,15 @@ class Custom_Dataset(Dataset):
 
 
 # Returns train/test/valid dataset as dataframes
-def parse_dataset(colab):
+def parse_dataset(dataset_path):
     # Train/Test/Val Paths
-    if(colab):
-        dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"
+    if(dataset_path[0]!='.'):
+        # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"
         Train_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TRAIN")
         Test_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TEST")
         Validation_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TEST_SIMPLE")
     else:
-        dataset_path = "./kaggle/blood_cell/"
+        # dataset_path = "./kaggle/blood_cell/"
         Train_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TRAIN")
         Test_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TEST")
         Validation_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TEST_SIMPLE")

@@ -30,6 +30,7 @@ parser.add_argument('--cutout_length', type=int, default=16, help='cutout length
 parser.add_argument('--drop_path_prob', type=float, default=0.2, help='drop path probability')
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='which architecture to use')
+parser.add_argument('--dataset_path', type=str, default='/k5wang-volume-datasets/kaggle/blood-cell', help='location of the data corpus')
 args = parser.parse_args()
 
 log_format = '%(asctime)s %(message)s'
@@ -70,9 +71,10 @@ def main():
   # test_queue = torch.utils.data.DataLoader(
   #     test_data, batch_size=args.batch_size, shuffle=False, pin_memory=True, num_workers=2)
 
-  dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
+  # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
   # dataset_path = "./kaggle/blood_cell/" # Path for local
-  train_data, test_data, valid_data = custom_dataset.parse_dataset(colab=True) # False means working local
+  dataset_path = args.dataset_path
+  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path)
   _, test_queue = custom_dataset.preprocess_data(train_data, test_data, args.batch_size)
 
   model.drop_path_prob = args.drop_path_prob
@@ -89,26 +91,27 @@ def infer(test_queue, model, criterion):
   # for step, (input, target) in enumerate(test_queue):
   #   input = input.to(device)
   #   target = target.cuda(non_blocking=True)
-  for step, data in enumerate(test_queue):
-    input = data['image']
-    target = data['label']
-    input = input.to("cuda", dtype=torch.float)
-    target = target.to("cuda", dtype=torch.long) 
+  with torch.no_grad():
+    for step, data in enumerate(test_queue):
+      input = data['image']
+      target = data['label']
+      input = input.to("cuda", dtype=torch.float)
+      target = target.to("cuda", dtype=torch.long) 
 
-    logits, _ = model(input)
-    loss = criterion(logits, target)
+      logits, _ = model(input)
+      loss = criterion(logits, target)
 
-    prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
-    n = input.size(0)
-    # objs.update(loss.data[0], n)
-    # top1.update(prec1.data[0], n)
-    # top5.update(prec5.data[0], n)
-    objs.update(loss.item(), n)
-    top1.update(prec1.item(), n)
-    top5.update(prec5.item(), n)
+      prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
+      n = input.size(0)
+      # objs.update(loss.data[0], n)
+      # top1.update(prec1.data[0], n)
+      # top5.update(prec5.data[0], n)
+      objs.update(loss.item(), n)
+      top1.update(prec1.item(), n)
+      top5.update(prec5.item(), n)
 
-    if step % args.report_freq == 0:
-      logging.info('test %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
+      if step % args.report_freq == 0:
+        logging.info('test %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
 
   return top1.avg, objs.avg
 

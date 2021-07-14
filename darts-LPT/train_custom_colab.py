@@ -44,6 +44,7 @@ parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='wh
 parser.add_argument('--grad_clip', type=float, default=5, help='gradient clipping')
 parser.add_argument('--resume', type=str, default='')
 parser.add_argument('--is_cifar100', type=int, default=0)
+parser.add_argument('--dataset_path', type=str, default='/k5wang-volume-datasets/kaggle/blood-cell', help='location of the data corpus')
 args = parser.parse_args()
 
 args.save = 'eval-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
@@ -93,9 +94,10 @@ def main():
       weight_decay=args.weight_decay
       )
 
-  dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
+  # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
   # dataset_path = "./kaggle/blood_cell/" # Path for local
-  train_data, test_data, valid_data = custom_dataset.parse_dataset(True) # True means using colab
+  dataset_path = args.dataset_path
+  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) # True means using colab
   train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
