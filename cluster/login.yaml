@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: k5wang-login
+spec:
+  containers:
+  - name: vol-container
+    image: gitlab-registry.nautilus.optiputer.net/yol070/research-containers/research-login-v2
+    command: ["/bin/bash"]
+    args: ["-c", "sleep infinity"]
+    resources:
+      requests:
+        memory: "8Gi"
+        cpu: "2"
+      limits:
+        nvidia.com/gpu: "1"
+        memory: "8Gi"
+        cpu: "2"
+    volumeMounts:
+    - name: k5wang-volume     #use your own volume path
+      mountPath: /k5wang-volume
+  restartPolicy: Never
+  volumes:
+    - name: k5wang-volume
+      persistentVolumeClaim:
+        claimName: k5wang-volume
+
+
