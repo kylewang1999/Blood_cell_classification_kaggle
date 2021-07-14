@@ -5,16 +5,17 @@ metadata:
 spec:
   containers:
   - name: vol-container
-    image: gitlab-registry.nautilus.optiputer.net/yol070/research-containers/research-login-v2
+    image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
     command: ["/bin/bash"]
     args: ["-c", "sleep infinity"]
+    # args: ["bash"]
     resources:
       requests:
         memory: "8Gi"
         cpu: "2"
       limits:
         nvidia.com/gpu: "1"
-        memory: "8Gi"
+        memory: "12Gi"
         cpu: "2"
     volumeMounts:
     - name: k5wang-volume     #use your own volume path

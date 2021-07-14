@@ -35,7 +35,11 @@
     kubectl get pods/jobs ${pod/job_name_in_yaml}
     kubectl describe pods/jobs ${pod/job_name_in_yaml}
    ```
-3. Delete Pod/Job with ```kubectl delete pod/job ${pod/job_name}```
+3. Check gpu resource
+    ```bash
+   kubectl get nodes -L gpu-type
+    ```
+4. Delete Pod/Job with ```kubectl delete pod/job ${pod/job_name}```
 
 ### a) Start a bash shell in the pod/job
 ```bash
