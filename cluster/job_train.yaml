@@ -10,22 +10,24 @@ spec:
   template:
     metadata:
       labels:
-        k8s-app: research
+        name: k5wang-train
     spec:
       restartPolicy: Never
       containers:
       - name: research
         image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
         imagePullPolicy: Always
-        workingDir: /k5wang-volume/Blood_cell*/darts-LPT  # dir in which code is executed
-        command: ["bash","./train.sh"]
+        workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
+        # command: ["bash","train.sh"]
+        command: ["/bin/bash", "-c"]
+        args: ["pwd; ls; bash train.sh"]
         resources:
           requests:
-            memory: "16Gi"
+            memory: "12Gi"
             cpu: "2"
             nvidia.com/gpu: 2
           limits:
-            memory: "16Gi"
+            memory: "12Gi"
             cpu: "2"
             nvidia.com/gpu: 2
 

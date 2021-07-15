@@ -16,11 +16,26 @@
    ```bash
    kubectl apply -f storage.yaml
    ```
+    A peek inside storage.yaml:
+    ```yaml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: <your-volume-name>
+    spec:
+      storageClassName: rook-cephfs
+      accessModes:
+      - ReadWriteMany
+      resources:
+        requests:
+          storage: 500Gi
+    ```
+
 
 2. Check PVC(Persistent volume claim)
 
     ```bash
-    kubectl get pvc k5wang-volume
+    kubectl get pvc ${VOLUME_NAME}
     ```
 
 ## II. Setting up pod/job for deployment
@@ -75,8 +90,8 @@ kubectl cp kaggle ecepxie/k5wang-login:k5wang-volume/Blood_cell_classification_k
 2. Git (suggested for code transfer). You can git push your code on the repo and pull them on the cluster. This method can additionally maintain history of your code, and increase efficiency if collaboration is needed.
 
 ## Exmaple of login.yaml
-
-```.yaml
+> This is a Pod. ***NEVER*** use ```args: ["-c", "sleep infinity"]``` for a Job
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -107,4 +122,35 @@ spec:
     gpu-type: "1080Ti"
 ```
 
-- Apply a separate storage volume for datasets
+## Useful bash commands & more
+[**Set alias to commands:**](https://linuxize.com/post/how-to-create-bash-aliases/)
+  ```bash
+  alias alias_name="command_to_run"
+  ```
+[**Delete failed pods**](https://gist.github.com/zparnold/0e72d7d3563da2704b900e3b953a8229): 
+  ```bash
+  kubectl get pods | grep k5wang |grep Error | awk '{print $1}' | xargs kubectl delete pod
+  ```
+[**Sleep**](https://www.cyberciti.biz/faq/linux-unix-sleep-bash-scripting/) (Wait before executing next line of bash script): 
+  ```sleep ${DURATION}```
+
+[**Run multiple bash command with .yaml file**](https://stackoverflow.com/questions/33887194/how-to-set-multiple-commands-in-one-yaml-file-with-kubernetes):
+  ```yaml
+  command: ["/bin/bash","-c"]
+  args: ["${COMMAND_1}; ${COMMAN_2}"]
+  ```
+**Easier pod/job deletion with labels:**
+Executing a job will likely create multiple pods with non-human-friendly suffixes. It is therefore easier to set a label for job (which is inherited by the spanwed pods), and use that as an identifier.
+  - *Step1*: [Set a label for the pod/job](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+    ```yaml
+    metadata:
+      name: name-of-your-pod
+      labels:
+        stage: train
+        model: CIFAR10
+        data: blood_cell
+    ```
+  - *Step2*: [Use lables to delete desired pods/jobs](https://stackoverflow.com/questions/59473707/kubenetes-pod-delete-with-pattern-match-or-wilcard)
+    ```bash
+    kubectl delete pods -l ${label_key}=${label_value}
+    ```
