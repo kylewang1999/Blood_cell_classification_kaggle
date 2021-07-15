@@ -72,5 +72,37 @@ kubectl cp kaggle ecepxie/k5wang-login:k5wang-volume/Blood_cell_classification_k
 
 2. Git (suggested for code transfer). You can git push your code on the repo and pull them on the cluster. This method can additionally maintain history of your code, and increase efficiency if collaboration is needed.
 
+## Exmaple of login.yaml
+
+```.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: haoban-login
+spec:
+  containers:
+  - name: vol-container
+    image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
+    command: ["/bin/bash"]
+    args: ["-c", "sleep infinity"]
+    resources:
+      requests:
+        memory: "8Gi"
+        cpu: 2
+      limits:
+        nvidia.com/gpu: 1
+        memory: "8Gi"
+        cpu: 2
+    volumeMounts:
+    - name: haoban-volume     #use your own volune path
+      mountPath: /haoban-volume
+  restartPolicy: Never
+  volumes:
+    - name: haoban-volume
+      persistentVolumeClaim:
+        claimName: haoban-volume
+  nodeSelector:
+    gpu-type: "1080Ti"
+```
 
 - Apply a separate storage volume for datasets
