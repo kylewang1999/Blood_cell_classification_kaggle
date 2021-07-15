@@ -39,20 +39,22 @@
     ```bash
    kubectl get nodes -L gpu-type
     ```
-4. Delete Pod/Job with ```kubectl delete pod/job ${pod/job_name}```
+4. Display content printed to the console
+   ```
+   kubectl logs ${POD/JOB_NAME}
+   ```
+5. Delete Pod/Job with ```kubectl delete pod/job ${pod/job_name}```
 
 ### a) Start a bash shell in the pod/job
 ```bash
 kubectl exec -it ${POD_NAME} bash
 ```
-and terminate it
-```bash
-exit
-```
+Terimnate shell with ```exit```
 
 ### b) Deploy the job
 ```bash
-kubectl apply -f <job_name>.yaml
+kubectl apply -f <job_name>.yaml      # or
+kubectl create -f <job_name>.yaml
 ```
 
 Note:

@@ -1,9 +1,10 @@
 apiVersion: batch/v1
 kind: Job # Deployment will automatically restart when killed. Use Pod if not needed
 metadata:
-  labels:
-    k8s-app: research
-  generateName: k5wang-job      # Name of Job
+  # labels:
+  #   k8s-app: research
+  # generateName: k5wang-job-train     # Name of Job
+  name: k5wang-job-train
   namespace: ecepxie
 spec:
   template:
@@ -17,7 +18,7 @@ spec:
         image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
         imagePullPolicy: Always
         workingDir: /k5wang-volume/Blood_cell*/darts-LPT  # dir in which code is executed
-        command: ["bash","../cluster/train.sh"]
+        command: ["bash","./train.sh"]
         resources:
           requests:
             memory: "16Gi"
@@ -49,4 +50,4 @@ spec:
               - key: gpu-type
                 operator: In # Use NotIn for other types
                 values:
-                - 2080Ti
+                - 1080Ti
