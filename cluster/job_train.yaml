@@ -20,7 +20,7 @@ spec:
         workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
         # command: ["bash","train.sh"]
         command: ["/bin/bash", "-c"]
-        args: ["pwd; ls; bash train.sh"]
+        args: ["pwd && ls; bash train.sh"]
         resources:
           requests:
             memory: "12Gi"

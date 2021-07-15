@@ -5,5 +5,5 @@
 # pip install Pillow==6.2.2
 # pip install pydicom
 # pip install --upgrade efficientnet-pytorch
-pwd && ls
+# pwd && ls
 python ../darts-LPT/train_custom_colab.py --auxiliary --epochs 50 --save eval-EXP-CIFAR-50 
