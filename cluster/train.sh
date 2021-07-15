@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 nvidia-smi
-conda env create -f environment.yml
+# conda env create -f environment.yml
 # source activate yxy
 # pip install Pillow==6.2.2
 # pip install pydicom
 # pip install --upgrade efficientnet-pytorch
-python test.py --auxiliary --model_path cifar10_model.pt
+python ../darts-LPT/train_custom_colab.py --auxiliary --model_path --epochs 50 --save eval-EXP-CIFAR-50 

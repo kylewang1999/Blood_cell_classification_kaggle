@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job # Deployment will automatically restart when killed. Use Pod if not needed
+metadata:
+  labels:
+    k8s-app: research
+  generateName: k5wang-job      # Name of Job
+  namespace: ecepxie
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: research
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: research
+        image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
+        imagePullPolicy: Always
+        workingDir: /k5wang-volume/Blood_cell*/darts-LPT  # dir in which code is executed
+        command: ["bash","../cluster/train.sh"]
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "2"
+            nvidia.com/gpu: 2
+          limits:
+            memory: "16Gi"
+            cpu: "2"
+            nvidia.com/gpu: 2
+
+        volumeMounts:
+        - name: k5wang-volume     #use your own volume path
+          mountPath: /k5wang-volume
+        - name: k5wang-volume-datasets
+          mountPath: /k5wang-volume-datasets
+    
+      volumes:
+        - name: k5wang-volume
+          persistentVolumeClaim:
+            claimName: k5wang-volume
+        - name: k5wang-volume-datasets
+          persistentVolumeClaim:
+            claimName: k5wang-volume-datasets
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: gpu-type
+                operator: In # Use NotIn for other types
+                values:
+                - 2080Ti
