@@ -19,7 +19,7 @@ spec:
         imagePullPolicy: Always
         workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
         command: ["/bin/bash", "-c"]
-        args: ["python ../darts-LPT/train_custom_colab.py --auxiliary --epochs 50 --save eval-EXP-CIFAR-50"]
+        args: ["python ../darts-LPT/train_custom_colab.py --epochs 50 --save CIFAR-50-WITH_AUX"]
         # command: ["bash","train.sh"]
         # command: ["/bin/bash", "-c"]
         # args: ["pwd && ls; bash train.sh"]
