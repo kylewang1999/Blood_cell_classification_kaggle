@@ -67,21 +67,44 @@ class AuxiliaryHeadCIFAR(nn.Module):
     super(AuxiliaryHeadCIFAR, self).__init__()
     self.features = nn.Sequential(
       nn.ReLU(inplace=True),
-      nn.AvgPool2d(5, stride=3, padding=0, count_include_pad=False), # image size = 2 x 2
-      nn.Conv2d(C, 128, 1, bias=False),
-      nn.BatchNorm2d(128),
-      nn.ReLU(inplace=True),
-      nn.Conv2d(128, 768, 2, bias=False),
-      nn.BatchNorm2d(768),
-      nn.ReLU(inplace=True)
+      nn.AvgPool2d(5, stride=3, padding=0, count_include_pad=False), # (C, 2, 2)
+      nn.Conv2d(C, 128, 1, bias=False),   # (128, 2, 2)
+      nn.BatchNorm2d(128),                # (128, 2, 2)
+      nn.ReLU(inplace=True),              # (128, 2, 2)
+      nn.Conv2d(128, 768, 2, bias=False), # (768, 1, 1)
+      nn.BatchNorm2d(768),                # (768, 1, 1)
+      nn.ReLU(inplace=True)               # (768, 1, 1)
     )
-    self.classifier = nn.Linear(768, num_classes)
+    # self.classifier = nn.Linear(768, num_classes)   # For CIFAR
+    self.classifier = nn.Linear(768*9*9, num_classes) # For blood_cell dataset
 
   def forward(self, x):
     x = self.features(x)
     x = self.classifier(x.view(x.size(0),-1))
     return x
 
+# For blood_cell_classification kaggle dataset
+class AuxiliaryHeadBC(nn.Module):
+
+  def __init__(self, C, num_classes):
+    """assuming input size 128x128"""
+    super(AuxiliaryHeadCIFAR, self).__init__()
+    self.features = nn.Sequential(
+      nn.ReLU(inplace=True),              #(128, 128, 128)
+      nn.AvgPool2d(5, stride=3, padding=0, count_include_pad=False), 
+      nn.Conv2d(C, 128, 1, bias=False),   # (128, 2, 2)
+      nn.BatchNorm2d(128),                # (128, 2, 2)
+      nn.ReLU(inplace=True),              # (128, 2, 2)
+      nn.Conv2d(128, 768, 2, bias=False), # (768, 1, 1)
+      nn.BatchNorm2d(768),                # (768, 1, 1)
+      nn.ReLU(inplace=True)               # (768, 1, 1)
+    )
+    self.classifier = nn.Linear(768*9*9, num_classes)
+
+  def forward(self, x):
+    x = self.features(x)
+    x = self.classifier(x.view(x.size(0),-1))
+    return x
 
 class AuxiliaryHeadImageNet(nn.Module):
 

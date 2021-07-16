@@ -1,2 +1,4 @@
 /kaggle
 /eval*
+./darts-LPT/eval*
+./cluster/eval*

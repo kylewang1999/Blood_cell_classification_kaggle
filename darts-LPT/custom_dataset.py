@@ -37,6 +37,7 @@ class Custom_Dataset(Dataset):
         # image = np.transpose(image, (2, 0, 1)).astype(np.float) 
         image = Image.open(image)
         image = image.resize((128,128))
+        # print("Image dimension after resizing: {}".format(image.size))
         image = self.transform(image)
         return {
             # 'image': torch.tensor(image, dtype=torch.float),

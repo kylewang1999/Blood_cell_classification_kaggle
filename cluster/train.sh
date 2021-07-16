@@ -6,4 +6,4 @@
 # pip install pydicom
 # pip install --upgrade efficientnet-pytorch
 # pwd && ls
-python ../darts-LPT/train_custom_colab.py --auxiliary --epochs 50 --save eval-EXP-CIFAR-50 
+python ../darts-LPT/train_custom_colab.py --epochs 50 --save CIFAR-50-WITH_AUX 

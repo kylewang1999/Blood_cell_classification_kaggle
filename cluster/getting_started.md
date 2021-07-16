@@ -9,6 +9,12 @@
   - Path to this dataset: ```/k5wang-volume-datasets/kaggle/blood-cell```
 - To remove dir [quickly](https://yonglhuang.com/rm-file/): ```find ./ -type f -delete```
 
+## Resources 
+
+- [Pytorch Pipeline Example](https://www.kaggle.com/hasanmoni/pytorch-resnet34)  |  [Preprocessing Example](https://www.kaggle.com/kylewang1999/classify-blood-cell-subtypes-all-process/edit)
+
+- [Cluster Startup Doc](https://docs.google.com/document/d/1DuYSFYcDwdT9L4Vc-8m5HHBC_pQB2FgWvtK_xZR8nEk/edit)  |  [UCSD-PRP Doc - Gitlab](https://gitlab.com/ucsd-prp/ucsd-prp.gitlab.io/-/tree/master/_userdocs) | [Nautilus Guide - Github](https://github.com/Adamdad/nautilus_cluster_guide)
+
 ## I. First Time Use  
 
 1. Apply for permanant storage
@@ -74,9 +80,9 @@ kubectl create -f <job_name>.yaml
 
 Note:
 - ```kind``` in job.yaml should be ```Job```, not ```Pod``` anymore
-- Never use ```args: ["sleep", "infinity"]``` for a Job
+- ___Never___ use ```args: ["sleep", "infinity"]``` for a Job
 
-## Transfer file to the cluster
+## III. Transfer file to the cluster
 For me there are two ways to transfer file to the cluster
 1. kubectl copy
 ```
@@ -89,13 +95,13 @@ kubectl cp kaggle ecepxie/k5wang-login:k5wang-volume/Blood_cell_classification_k
 
 2. Git (suggested for code transfer). You can git push your code on the repo and pull them on the cluster. This method can additionally maintain history of your code, and increase efficiency if collaboration is needed.
 
-## Exmaple of login.yaml
+## IV. Exmaple of login.yaml
 > This is a Pod. ***NEVER*** use ```args: ["-c", "sleep infinity"]``` for a Job
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: haoban-login
+  name: <your-user-name>-login
 spec:
   containers:
   - name: vol-container
@@ -111,7 +117,7 @@ spec:
         memory: "8Gi"
         cpu: 2
     volumeMounts:
-    - name: haoban-volume     #use your own volune path
+    - name: haoban-volume     #use your own **volume** path
       mountPath: /haoban-volume
   restartPolicy: Never
   volumes:
@@ -122,11 +128,41 @@ spec:
     gpu-type: "1080Ti"
 ```
 
-## Useful bash commands & more
-[**Set alias to commands:**](https://linuxize.com/post/how-to-create-bash-aliases/)
-  ```bash
-  alias alias_name="command_to_run"
-  ```
+## V. Useful bash knowledge
+[**Understanding Bash**](https://unix.stackexchange.com/questions/129143/what-is-the-purpose-of-bashrc-and-how-does-it-work)
+
+> [~/.bashrc & ~/.bash_profile](https://askubuntu.com/questions/121413/understanding-bashrc-and-bash-profile) | [Bash Manual](https://www.gnu.org/software/bash/manual/bash.html#Aliases)
+
+[**Set a single alias to Command:**](https://linuxize.com/post/how-to-create-bash-aliases/)
+```
+alias alias_name="command_to_run"
+```
+
+[**Set Multiple alias by modifying ```~/.bash_profile```**](https://askubuntu.com/a/606882): 
+  
+  1. Add the following to ~/.bash_profile
+```bash
+    # Step1: Add the following to ~/.bash_profile
+    if [ -f ~/.bash_aliases ]; then
+      . ~/.bash_aliases
+    fi
+```
+  2. Add desired aliases to ~/.bash_aliases, such as
+```bash
+alias kube="kubectl"
+alias getpods="kubectl get pods | grep k5wang"
+alias getjobs="kubectl get jobs | grep k5wang"
+alias get="getpods && getjobs"
+alias logs="kubectl logs -l name=k5wang_train"
+alias kubelogin="kubectl create -f login.yaml"
+alias kubelogout="kubectl delete -f login.yaml"
+alias kubeexec="kubectl exec -it k5wang-login bash"
+alias p="pwd"
+alias weight_path="/k5wang-volume/Blood_cell_classification_kaggle/cluster/eval-EXP-CIFAR-25EPOCHS"
+alias test="python test_colab.py --model_path ../cluster/eval-EXP-CIFAR-25EPOCHS/weights.pt"
+```
+3. Remember to restart the shell to make the change take 
+
 [**Delete failed pods**](https://gist.github.com/zparnold/0e72d7d3563da2704b900e3b953a8229): 
   ```bash
   kubectl get pods | grep k5wang |grep Error | awk '{print $1}' | xargs kubectl delete pod
@@ -154,3 +190,12 @@ Executing a job will likely create multiple pods with non-human-friendly suffixe
     ```bash
     kubectl delete pods -l ${label_key}=${label_value}
     ```
+
+## VI. Train / Test Command
+```python
+# os.chdir('/content/drive/MyDrive/darts-LPT')
+
+python train_custom_colab.py --auxiliary --epochs 50  # Train
+
+python test_colab.py --model_path ./eval-EXP-20210713-031828/weights.pt # Test
+```

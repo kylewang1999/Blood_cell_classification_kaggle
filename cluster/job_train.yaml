@@ -18,9 +18,11 @@ spec:
         image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
         imagePullPolicy: Always
         workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
-        # command: ["bash","train.sh"]
         command: ["/bin/bash", "-c"]
-        args: ["pwd && ls; bash train.sh"]
+        args: ["python ../darts-LPT/train_custom_colab.py --auxiliary --epochs 50 --save eval-EXP-CIFAR-50"]
+        # command: ["bash","train.sh"]
+        # command: ["/bin/bash", "-c"]
+        # args: ["pwd && ls; bash train.sh"]
         resources:
           requests:
             memory: "12Gi"
