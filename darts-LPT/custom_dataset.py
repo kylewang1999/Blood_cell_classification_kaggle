@@ -164,7 +164,7 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
                 indices[split:num_train]),
             pin_memory=False, num_workers = 4)
         external_queue = DataLoader(
-            dataset = train_dataset, batch_size=args.batch_size,
+            dataset = train_dataset, batch_size = batch_size,
             sampler=torch.utils.data.sampler.SubsetRandomSampler(
                 indices[split:num_train]),
             pin_memory=False, num_workers=4)
