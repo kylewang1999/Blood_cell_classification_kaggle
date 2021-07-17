@@ -261,14 +261,15 @@ def train(train_queue, valid_queue, external_queue,
   # for step, (input, target) in enumerate(train_queue):
   #   model.train()
   #   n = input.size(0)
-
   #   input = input.cuda()
   #   target = target.cuda(non_blocking=True)
   for step, data in enumerate(train_queue):
     input = data['image']
     target = data['label']
     input = input.to("cuda", dtype=torch.float)
-    target = target.to("cuda", dtype=torch.long) 
+    target = target.to("cuda", dtype=torch.long)
+    model.train()
+    n = input.size(0) 
 
     # get a random minibatch from the search queue with replacement
     data_search = next(iter(valid_queue))
