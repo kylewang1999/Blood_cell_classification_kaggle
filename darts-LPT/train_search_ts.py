@@ -235,7 +235,7 @@ def main():
     #     lr_w, lr_h,
     #     teacher_updater,
     #     teacher_w, teacher_h, teacher_v)
-    logging.info('train_acc %f', train_acc)
+    # logging.info('train_acc %f', train_acc)
     # scheduler.step()
     # scheduler_w.step()
     # scheduler_h.step()
