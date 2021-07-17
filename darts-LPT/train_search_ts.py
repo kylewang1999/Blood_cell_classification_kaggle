@@ -258,12 +258,17 @@ def train(train_queue, valid_queue, external_queue,
   top1 = utils.AvgrageMeter()
   top5 = utils.AvgrageMeter()
 
-  for step, (input, target) in enumerate(train_queue):
-    model.train()
-    n = input.size(0)
+  # for step, (input, target) in enumerate(train_queue):
+  #   model.train()
+  #   n = input.size(0)
 
-    input = input.cuda()
-    target = target.cuda(non_blocking=True)
+  #   input = input.cuda()
+  #   target = target.cuda(non_blocking=True)
+  for step, data in enumerate(train_queue):
+    input = data['image']
+    target = data['label']
+    input = input.to("cuda", dtype=torch.float)
+    target = target.to("cuda", dtype=torch.long) 
 
     # get a random minibatch from the search queue with replacement
     input_search, target_search = next(iter(valid_queue))
@@ -329,9 +334,14 @@ def infer(valid_queue, model, criterion):
   top5 = utils.AvgrageMeter()
   model.eval()
   with torch.no_grad():
-    for step, (input, target) in enumerate(valid_queue):
-        input = input.cuda()
-        target = target.cuda(non_blocking=True)
+    # for step, (input, target) in enumerate(valid_queue):
+    #     input = input.cuda()
+    #     target = target.cuda(non_blocking=True)
+    for step, data in enumerate(valid_queue):
+        input = data['image']
+        target = data['label']
+        input = input.to("cuda", dtype=torch.float)
+        target = target.to("cuda", dtype=torch.long) 
 
         logits = model(input)
         loss = criterion(logits, target)

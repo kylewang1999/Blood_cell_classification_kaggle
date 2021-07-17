@@ -15,20 +15,23 @@
 ## Bug Journal
 
 1. When working locally with pathlib's list(Path.glob()), the path needs to be global path. Otherwise will produce empty list.
+   
+2. ```AttributeError: 'str' object has no attribute 'size'```
+Change view() to reshape()
 
-2. In utils, replace view() with reshape(). This is a pytorch version issue
+3. In utils, replace view() with reshape(). This is a pytorch version issue
 
-3. In utils.load(): If using CPU, need to replace model.load_state_dict w/ torch.load()
+4. In utils.load(): If using CPU, need to replace model.load_state_dict w/ torch.load()
 
-4. [CUDA out of memory](https://pytorch.org/docs/stable/notes/faq.html) -- batch size too large
+5. [CUDA out of memory](https://pytorch.org/docs/stable/notes/faq.html) -- batch size too large
 
-5. CUDA out of memory after changing batch size, while testing on colab - Loop thru test_queue inside of torch.no_grad()
+6. CUDA out of memory after changing batch size, while testing on colab - Loop thru test_queue inside of torch.no_grad()
 
-6. In train(), infer(), change top 5 to top2, since there are only 4 clases to predict.
+7. In train(), infer(), change top 5 to top2, since there are only 4 clases to predict.
 
-7. error: unrecognized arguments while running train.py with cluster/train.sh bash script. Quick fix: execute using .yaml file instead. 
+8. error: unrecognized arguments while running train.py with cluster/train.sh bash script. Quick fix: execute using .yaml file instead. 
 
-8. Upon restart, import numpy in .py files result in ```ModuleNotFoundError: No module named 'numpy'```. [Stackoverflow](https://stackoverflow.com/a/40186317): 
+9.  Upon restart, import numpy in .py files result in ```ModuleNotFoundError: No module named 'numpy'```. [Stackoverflow](https://stackoverflow.com/a/40186317): 
 
 > a) Make sure you are choosing the anaconda python interpreter
 > b) Try ```conda install numpy``` if step 1 doesn't solve the problem 
