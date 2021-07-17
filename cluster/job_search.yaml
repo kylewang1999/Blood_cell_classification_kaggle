@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: Job # Deployment will automatically restart when killed. Use Pod if not needed
+metadata:
+  # labels:
+  #   k8s-app: research
+  # generateName: k5wang-job-train     # Name of Job
+  name: k5wang-job-search
+  namespace: ecepxie
+spec:
+  template:
+    metadata:
+      labels:
+        name: k5wang-train
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: research
+        image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
+        imagePullPolicy: Always
+        workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
+        command: ["/bin/bash", "-c"]
+        args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 5 --epochs 50 --save 50-WITH_AUX"]
+        # command: ["bash","train.sh"]
+        # command: ["/bin/bash", "-c"]
+        # args: ["pwd && ls; bash train.sh"]
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "2"
+            nvidia.com/gpu: 4
+          limits:
+            memory: "16Gi"
+            cpu: "2"
+            nvidia.com/gpu: 4
+
+        volumeMounts:
+        - name: k5wang-volume     #use your own volume path
+          mountPath: /k5wang-volume
+        - name: k5wang-volume-datasets
+          mountPath: /k5wang-volume-datasets
+    
+      volumes:
+        - name: k5wang-volume
+          persistentVolumeClaim:
+            claimName: k5wang-volume
+        - name: k5wang-volume-datasets
+          persistentVolumeClaim:
+            claimName: k5wang-volume-datasets
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: gpu-type
+                operator: In # Use NotIn for other types
+                values:
+                - 1080Ti
