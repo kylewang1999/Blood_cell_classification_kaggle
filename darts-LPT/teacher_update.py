@@ -6,8 +6,9 @@ from torch.autograd import Variable
 from teacher import *
 
 
-CIFAR_CLASSES = 10
-CIFAR100_CLASSES = 100
+# CIFAR_CLASSES = 10
+# CIFAR100_CLASSES = 100
+NUM_CLASSES = 4
 
 
 def _concat(xs):
@@ -212,12 +213,14 @@ class Teacher_Updater(object):
     return model_new.cuda()
 
   def _construct_model_from_theta_h(self, theta):
-    if self.args.is_cifar100:
-      model_new = nn.Linear(
-        512 * self.model_w.block.expansion, CIFAR100_CLASSES).cuda()
-    else:
-      model_new = nn.Linear(
-        512 * self.model_w.block.expansion, CIFAR_CLASSES).cuda()
+    # if self.args.is_cifar100:
+    #   model_new = nn.Linear(
+    #     512 * self.model_w.block.expansion, CIFAR100_CLASSES).cuda()
+    # else:
+    #   model_new = nn.Linear(
+    #     512 * self.model_w.block.expansion, CIFAR_CLASSES).cuda()
+    model_new = nn.Linear(
+        512 * self.model_w.block.expansion, NUM_CLASSES).cuda()
     model_dict = self.model_h.state_dict()
 
     params, offset = {}, 0
