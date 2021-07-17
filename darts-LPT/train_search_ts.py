@@ -24,7 +24,7 @@ import custom_dataset
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--data', type=str, default='../data',
                     help='location of the data corpus')
-parser.add_argument('--batch_size', type=int, default=64, help='batch size')
+parser.add_argument('--batch_size', type=int, default=10, help='batch size')
 parser.add_argument('--learning_rate', type=float,
                     default=0.025, help='init learning rate')
 parser.add_argument('--learning_rate_min', type=float,
@@ -113,10 +113,11 @@ def main():
 
   criterion = nn.CrossEntropyLoss()
   criterion = criterion.cuda()
-  if args.is_cifar100:
-    model = Network(args.init_channels, CIFAR100_CLASSES, args.layers, criterion)
-  else:
-    model = Network(args.init_channels, CIFAR_CLASSES, args.layers, criterion)
+  # if args.is_cifar100:
+  #   model = Network(args.init_channels, CIFAR100_CLASSES, args.layers, criterion)
+  # else:
+  #   model = Network(args.init_channels, CIFAR_CLASSES, args.layers, criterion)
+  model = Network(args.init_channels, NUM_CLASSES, args.layers, criterion)
   model = model.cuda()
   if args.teacher_arch == '18':
     teacher_w = resnet18().cuda()
@@ -176,7 +177,8 @@ def main():
   #                           download=True, transform=train_transform)
   dataset_path = args.dataset_path
   train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
-  train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size, train_search=True)
+  train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
+    train_data, valid_data, args.batch_size, train_search=True)
   
   # num_train = len(train_data)
   # indices = list(range(num_train))
