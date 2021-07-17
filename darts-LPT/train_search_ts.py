@@ -180,7 +180,7 @@ def main():
   dataset_path = args.dataset_path
   train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
   train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
-    train_data, valid_data, args.batch_size, train_search=True)
+    train_data, _, args.batch_size, train_search=True)
   
   # num_train = len(train_data)
   # indices = list(range(num_train))
@@ -239,7 +239,7 @@ def main():
     # scheduler.step()
     # scheduler_w.step()
     # scheduler_h.step()
-    
+
     # validation
     valid_acc, valid_obj = infer(valid_queue, model, criterion)
     # external_acc, external_obj = infer(external_queue, model, criterion)
