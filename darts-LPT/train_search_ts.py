@@ -271,13 +271,24 @@ def train(train_queue, valid_queue, external_queue,
     target = target.to("cuda", dtype=torch.long) 
 
     # get a random minibatch from the search queue with replacement
-    input_search, target_search = next(iter(valid_queue))
-    input_search = input_search.cuda()
-    target_search = target_search.cuda(non_blocking=True)
+    data_search = next(iter(valid_queue))
+    input_search = data_search['image']
+    target_search = data_search['label']
+    input_search = input_search.to("cuda", dtype=torch.float)
+    target_search = target_search.to("cuda", dtype=torch.long) 
 
-    input_external, target_external = next(iter(external_queue))
-    input_external = input_external.cuda()
-    target_external = target_external.cuda(non_blocking=True)
+    data_external= next(iter(valid_queue))
+    input_external = data_external['image']
+    target_external = data_external['label']
+    input_external = input_external.to("cuda", dtype=torch.float)
+    target_external = target_external.to("cuda", dtype=torch.long) 
+
+    # input_search, target_search = next(iter(valid_queue))
+    # input_search = input_search.cuda()
+    # target_search = target_search.cuda(non_blocking=True)
+    # input_external, target_external = next(iter(external_queue))
+    # input_external = input_external.cuda()
+    # target_external = target_external.cuda(non_blocking=True)
 
     architect.step(input, target, input_external, target_external,
                    lr, optimizer, teacher_w, teacher_v, unrolled=args.unrolled)
