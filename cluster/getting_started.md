@@ -192,10 +192,17 @@ Executing a job will likely create multiple pods with non-human-friendly suffixe
     ```
 
 ## VI. Train / Test Command
-```python
+**Composing LPT with DARTS:**
+```
+CIFAR-10/100: cd darts-LPT && python train_search_ts.py 
+--unrolled\\
+--is_cifar100 0/1 --gpu 0 --save xxx
+```
+**Architecture Evaluation:**
+```bash
 # os.chdir('/content/drive/MyDrive/darts-LPT')
 
-python train_custom_colab.py --auxiliary --epochs 50  # Train
+python train_custom_colab.py --auxiliary --epochs 50 --save xxx  # Train
 
-python test_colab.py --model_path ./eval-EXP-20210713-031828/weights.pt # Test
+python ../darts-LPT/test_colab.py --model_path ../cluster/eval-CIFAR-50-WITH_AUX-20210716-135809/weights.pt # Test
 ```

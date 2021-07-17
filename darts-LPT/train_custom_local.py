@@ -97,7 +97,7 @@ def main():
   # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
   # dataset_path = "./kaggle/blood_cell/" # Path for local
   dataset_path = args.dataset_path
-  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) # False means working local
+  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path)
   train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))

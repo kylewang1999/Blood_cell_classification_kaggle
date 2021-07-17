@@ -18,6 +18,7 @@ from model_search import Network # Trains the network in model_search
 from architect_ts import Architect
 from teacher import *
 from teacher_update import *
+import custom_dataset
 
 
 parser = argparse.ArgumentParser("cifar")
@@ -73,6 +74,8 @@ parser.add_argument('--weight_decay_h', type=float, default=3e-4)
 parser.add_argument('--is_parallel', type=int, default=0)
 parser.add_argument('--teacher_arch', type=str, default='18')
 parser.add_argument('--is_cifar100', type=int, default=0)
+# parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
+parser.add_argument('--dataset_path', type=str, default='/content/drive/MyDrive/kaggle/blood_cell/', help='location of the data corpus')
 args = parser.parse_args()
 
 args.save = 'search-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
@@ -86,8 +89,9 @@ fh.setFormatter(logging.Formatter(log_format))
 logging.getLogger().addHandler(fh)
 
 
-CIFAR_CLASSES = 10
-CIFAR100_CLASSES = 100
+# CIFAR_CLASSES = 10
+# CIFAR100_CLASSES = 100
+NUM_CLASSES = 4
 
 
 def main():
@@ -160,16 +164,19 @@ def main():
       momentum=args.momentum,
       weight_decay=args.weight_decay_h)
 
-  if args.is_cifar100:
-    train_transform, valid_transform = utils._data_transforms_cifar100(args)
-  else:
-    train_transform, valid_transform = utils._data_transforms_cifar10(args)
-  if args.is_cifar100:
-    train_data = dset.CIFAR100(root=args.data, train=True,
-                            download=True, transform=train_transform)
-  else:
-    train_data = dset.CIFAR10(root=args.data, train=True,
-                            download=True, transform=train_transform)
+  # if args.is_cifar100:
+  #   train_transform, valid_transform = utils._data_transforms_cifar100(args)
+  # else:
+  #   train_transform, valid_transform = utils._data_transforms_cifar10(args)
+  # if args.is_cifar100:
+  #   train_data = dset.CIFAR100(root=args.data, train=True,
+  #                           download=True, transform=train_transform)
+  # else:
+  #   train_data = dset.CIFAR10(root=args.data, train=True,
+  #                           download=True, transform=train_transform)
+  dataset_path = args.dataset_path
+  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
+  train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
 
   num_train = len(train_data)
   indices = list(range(num_train))
