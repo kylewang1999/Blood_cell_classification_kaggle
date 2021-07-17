@@ -204,5 +204,17 @@ CIFAR-10/100: cd darts-LPT && python train_search_ts.py
 
 python train_custom_colab.py --auxiliary --epochs 50 --save xxx  # Train
 
-python ../darts-LPT/test_colab.py --model_path ../cluster/eval-CIFAR-50-WITH_AUX-20210716-135809/weights.pt # Test
+python ../darts-LPT/test_colab.py --model_path ../cluster/eval-CIFAR-50-WITH_AUX-20210716-135809/weights.pt # Test. 
 ```
+**Testing Results:**
+
+CIFAR NAS Model | With Aux | 50 Training Epochs: 
+```
+07/17 02:05:34 AM test 000 1.934407e+00 80.000000 80.000000
+07/17 02:05:49 AM test 050 8.923928e-01 89.607843 94.117647
+07/17 02:05:58 AM test 100 9.121045e-01 89.603960 93.960396
+07/17 02:06:07 AM test 150 9.641347e-01 89.139073 93.576159
+07/17 02:06:16 AM test 200 9.714993e-01 89.154229 93.482587
+07/17 02:06:25 AM test_acc 88.661037
+```
+Custom NAS Model | With Aux | 50 Training Epochs: 

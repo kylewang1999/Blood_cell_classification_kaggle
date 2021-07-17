@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 import cv2
 from PIL import Image
+import numpy as np
 # Ignore warnings
 import warnings
 warnings.filterwarnings("ignore")
@@ -136,7 +137,7 @@ def create_transforms():
     return train_transform, valid_transform
 
 # Reutnr preprocessed train/valid dataset as pytorch DataLoader
-def preprocess_data(train_df, valid_df, batch_size):
+def preprocess_data(train_df, valid_df, batch_size, train_search=False):
     train_transform, valid_transform = create_transforms()
 
     x_train = train_df.JPG
@@ -147,16 +148,32 @@ def preprocess_data(train_df, valid_df, batch_size):
     y_valid = valid_df.CATEGORY
     valid_dataset = Custom_Dataset(x_valid.values, y_valid.values, valid_transform)
     
-    train_queue = DataLoader(
-        dataset = train_dataset,
-        batch_size = batch_size,
-        shuffle = True,
-        num_workers = 4)
-    valid_queue = DataLoader(
-        dataset = valid_dataset,
-        batch_size = batch_size,
-        shuffle = False,
-        num_workers = 4)
+    if train_search:    # Portioning Dataset for train_search_ts.py
+        train_portion = 0.5
+        num_train = len(train_dataset)
+        indices = list(range(num_train))
+        split = int(np.floor(train_portion * num_train))
+        train_queue = DataLoader(
+            dataset = train_dataset,batch_size = batch_size,
+            sampler=torch.utils.data.sampler.SubsetRandomSampler(
+                indices[split:num_train]),
+            num_workers = 4)
+        valid_queue = DataLoader(
+            dataset = valid_dataset, batch_size = batch_size,
+            sampler=torch.utils.data.sampler.SubsetRandomSampler(
+                indices[split:num_train]),
+            num_workers = 4)
+    else:
+        train_queue = DataLoader(
+            dataset = train_dataset, batch_size = batch_size,
+            shuffle = True,
+            num_workers = 4)
+        valid_queue = DataLoader(
+            dataset = valid_dataset, batch_size = batch_size,
+            shuffle = False,
+            num_workers = 4)
+
+
     
     return train_queue, valid_queue
 
