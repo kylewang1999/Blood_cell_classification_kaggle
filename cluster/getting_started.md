@@ -198,6 +198,9 @@ CIFAR-10/100: cd darts-LPT && python train_search_ts.py
 --unrolled\\
 --is_cifar100 0/1 --gpu 0 --save xxx
 ```
+```
+python ../darts-LPT/train_search_ts.py --unrolled 
+```
 **Architecture Evaluation:**
 ```bash
 # os.chdir('/content/drive/MyDrive/darts-LPT')

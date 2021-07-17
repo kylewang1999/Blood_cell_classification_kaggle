@@ -172,8 +172,6 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
             dataset = valid_dataset, batch_size = batch_size,
             shuffle = False,
             num_workers = 4)
-
-
     
     return train_queue, valid_queue
 
