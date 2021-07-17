@@ -178,7 +178,7 @@ def main():
   #   train_data = dset.CIFAR10(root=args.data, train=True,
   #                           download=True, transform=train_transform)
   dataset_path = args.dataset_path
-  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
+  train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
   train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
     train_data, valid_data, args.batch_size, train_search=True)
   
@@ -226,26 +226,27 @@ def main():
     print(F.softmax(model.alphas_reduce, dim=-1))
 
     # training
-    train_acc, train_obj = train(
-        train_queue, valid_queue, external_queue,
-        model, architect, criterion, optimizer,
-        optimizer_w,
-        optimizer_h,
-        lr,
-        lr_w, lr_h,
-        teacher_updater,
-        teacher_w, teacher_h, teacher_v)
+    # train_acc, train_obj = train(
+    #     train_queue, valid_queue, external_queue,
+    #     model, architect, criterion, optimizer,
+    #     optimizer_w,
+    #     optimizer_h,
+    #     lr,
+    #     lr_w, lr_h,
+    #     teacher_updater,
+    #     teacher_w, teacher_h, teacher_v)
     logging.info('train_acc %f', train_acc)
-    scheduler.step()
-    scheduler_w.step()
-    scheduler_h.step()
+    # scheduler.step()
+    # scheduler_w.step()
+    # scheduler_h.step()
+    
     # validation
     valid_acc, valid_obj = infer(valid_queue, model, criterion)
     # external_acc, external_obj = infer(external_queue, model, criterion)
     logging.info('valid_acc %f', valid_acc)
     # logging.info('external_acc %f', external_acc)
 
-    utils.save(model, os.path.join(args.save, 'weights.pt'))
+    # utils.save(model, os.path.join(args.save, 'weights.pt'))
 
 
 def train(train_queue, valid_queue, external_queue,
