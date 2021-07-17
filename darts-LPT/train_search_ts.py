@@ -176,15 +176,16 @@ def main():
   #                           download=True, transform=train_transform)
   dataset_path = args.dataset_path
   train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
-  # train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
-
-  num_train = len(train_data)
-  indices = list(range(num_train))
-  split = int(np.floor(args.train_portion * num_train))
+  train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size, train_search=True)
+  
+  # num_train = len(train_data)
+  # indices = list(range(num_train))
+  # split = int(np.floor(args.train_portion * num_train))
 
   # train_queue = torch.utils.data.DataLoader(
   #     train_data, batch_size=args.batch_size,
-  #     sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
+  #     sampler=torch.utils.data.sampler.SubsetRandomSampler(
+  #         indices[:split]),
   #     pin_memory=False, num_workers=4)
   # valid_queue = torch.utils.data.DataLoader(
   #     train_data, batch_size=args.batch_size,
@@ -192,14 +193,11 @@ def main():
   #         indices[split:num_train]),
   #     pin_memory=False, num_workers=4)
 
-  train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size, train_search=True)
-
-  # the dataset for data selection. can be imagenet or so.
-  external_queue = torch.utils.data.DataLoader(
-      train_data, batch_size=args.batch_size,
-      sampler=torch.utils.data.sampler.SubsetRandomSampler(
-          indices[split:num_train]),
-      pin_memory=False, num_workers=4)
+  # external_queue = torch.utils.data.DataLoader( # Dataset for data selection. can be imagenet or so.
+  #     train_data, batch_size=args.batch_size,
+  #     sampler=torch.utils.data.sampler.SubsetRandomSampler(
+  #         indices[split:num_train]),
+  #     pin_memory=False, num_workers=4)
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
       optimizer, float(args.epochs), eta_min=args.learning_rate_min)
