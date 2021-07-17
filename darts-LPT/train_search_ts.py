@@ -328,7 +328,7 @@ def train(train_queue, valid_queue, external_queue,
     nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
     optimizer.step()
 
-    prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+    prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
     objs.update(loss.item(), n)
     top1.update(prec1.item(), n)
     top5.update(prec5.item(), n)
@@ -357,7 +357,7 @@ def infer(valid_queue, model, criterion):
         logits = model(input)
         loss = criterion(logits, target)
 
-        prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+        prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
         n = input.size(0)
         objs.update(loss.item(), n)
         top1.update(prec1.item(), n)
