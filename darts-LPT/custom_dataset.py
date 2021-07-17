@@ -144,9 +144,7 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
     y_train = train_df.CATEGORY
     train_dataset = Custom_Dataset(x_train.values, y_train.values, train_transform)
 
-    x_valid = valid_df.JPG
-    y_valid = valid_df.CATEGORY
-    valid_dataset = Custom_Dataset(x_valid.values, y_valid.values, valid_transform)
+
     
     if train_search:    # Portioning Dataset for train_search_ts.py
         train_portion = 0.5
@@ -173,6 +171,10 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
         return train_queue, valid_queue, external_queue
         
     else:
+        x_valid = valid_df.JPG
+        y_valid = valid_df.CATEGORY
+        valid_dataset = Custom_Dataset(x_valid.values, y_valid.values, valid_transform)
+        
         train_queue = DataLoader(
             dataset = train_dataset, batch_size = batch_size,
             shuffle = True,
