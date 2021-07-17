@@ -127,10 +127,12 @@ def main():
     teacher_w = resnet50().cuda()
   elif args.teacher_arch == '101':
     teacher_w = resnet101().cuda()
-  if args.is_cifar100:
-    teacher_h = nn.Linear(512 * teacher_w.block.expansion, CIFAR100_CLASSES).cuda()
-  else:
-    teacher_h = nn.Linear(512 * teacher_w.block.expansion, CIFAR_CLASSES).cuda()
+
+  # if args.is_cifar100:
+  #   teacher_h = nn.Linear(512 * teacher_w.block.expansion, CIFAR100_CLASSES).cuda()
+  # else:
+  #   teacher_h = nn.Linear(512 * teacher_w.block.expansion, CIFAR_CLASSES).cuda()
+  teacher_h = nn.Linear(512 * teacher_w.block.expansion, NUM_CLASSES).cuda()
   teacher_v = nn.Linear(512 * teacher_w.block.expansion, 2).cuda()
   if args.is_parallel:
     gpus = [int(i) for i in args.gpu.split(',')]
