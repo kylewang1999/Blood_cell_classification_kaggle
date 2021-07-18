@@ -171,7 +171,7 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
         for step, data in enumerate(train_queue):
             input = data['image']
             target = data['label']
-            if np.isnan(input.numpy()) or np.isinf(input.numpy()):
+            if np.any(np.isnan(input.numpy())) or np.all(np.isinf(input.numpy())):
                 print("SOMETHING IS WRONG WITH DATASET")
             print(target.numpy)
         
