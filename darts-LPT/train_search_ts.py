@@ -25,8 +25,10 @@ parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--data', type=str, default='../data',
                     help='location of the data corpus')
 parser.add_argument('--batch_size', type=int, default=1, help='batch size')
+# parser.add_argument('--learning_rate', type=float,
+#                     default=0.025, help='init learning rate')
 parser.add_argument('--learning_rate', type=float,
-                    default=0.025, help='init learning rate')
+                    default=0.015, help='init learning rate')
 parser.add_argument('--learning_rate_min', type=float,
                     default=0.001, help='min learning rate')
 parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
@@ -226,19 +228,19 @@ def main():
     print(F.softmax(model.alphas_reduce, dim=-1))
 
     # training
-    # train_acc, train_obj = train(
-    #     train_queue, valid_queue, external_queue,
-    #     model, architect, criterion, optimizer,
-    #     optimizer_w,
-    #     optimizer_h,
-    #     lr,
-    #     lr_w, lr_h,
-    #     teacher_updater,
-    #     teacher_w, teacher_h, teacher_v)
-    # logging.info('train_acc %f', train_acc)
-    # scheduler.step()
-    # scheduler_w.step()
-    # scheduler_h.step()
+    train_acc, train_obj = train(
+        train_queue, valid_queue, external_queue,
+        model, architect, criterion, optimizer,
+        optimizer_w,
+        optimizer_h,
+        lr,
+        lr_w, lr_h,
+        teacher_updater,
+        teacher_w, teacher_h, teacher_v)
+    logging.info('train_acc %f', train_acc)
+    scheduler.step()
+    scheduler_w.step()
+    scheduler_h.step()
 
     # validation
     valid_acc, valid_obj = infer(valid_queue, model, criterion)

@@ -144,8 +144,6 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
     y_train = train_df.CATEGORY
     train_dataset = Custom_Dataset(x_train.values, y_train.values, train_transform)
 
-
-    
     if train_search:    # Portioning Dataset for train_search_ts.py
         train_portion = 0.5
         num_train = len(train_dataset)
