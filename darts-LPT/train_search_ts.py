@@ -27,10 +27,10 @@ parser.add_argument('--data', type=str, default='../data',
 parser.add_argument('--batch_size', type=int, default=1, help='batch size')
 # parser.add_argument('--learning_rate', type=float,
 #                     default=0.025, help='init learning rate')
-# parser.add_argument('--learning_rate', type=float,
-#                     default=0.015, help='init learning rate')
 parser.add_argument('--learning_rate', type=float,
-                    default=0.005, help='init learning rate')
+                    default=0.015, help='init learning rate')
+# parser.add_argument('--learning_rate', type=float,
+#                     default=0.005, help='init learning rate')
 parser.add_argument('--learning_rate_min', type=float,
                     default=0.001, help='min learning rate')
 parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
@@ -71,10 +71,10 @@ parser.add_argument('--weight_gamma', type=float, default=1.0)
 parser.add_argument('--weight_lambda', type=float, default=1.0)
 parser.add_argument('--model_v_learning_rate', type=float, default=3e-4)
 parser.add_argument('--model_v_weight_decay', type=float, default=1e-3)
-# parser.add_argument('--learning_rate_w', type=float, default=0.025)
-# parser.add_argument('--learning_rate_h', type=float, default=0.025)
-parser.add_argument('--learning_rate_w', type=float, default=0.005)
-parser.add_argument('--learning_rate_h', type=float, default=0.005)
+parser.add_argument('--learning_rate_w', type=float, default=0.025)
+parser.add_argument('--learning_rate_h', type=float, default=0.025)
+# parser.add_argument('--learning_rate_w', type=float, default=0.005)
+# parser.add_argument('--learning_rate_h', type=float, default=0.005)
 parser.add_argument('--weight_decay_w', type=float, default=3e-4)
 parser.add_argument('--weight_decay_h', type=float, default=3e-4)
 parser.add_argument('--is_parallel', type=int, default=0)
