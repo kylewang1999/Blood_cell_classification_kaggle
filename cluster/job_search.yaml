@@ -19,7 +19,8 @@ spec:
         imagePullPolicy: Always
         workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
         command: ["/bin/bash", "-c"]
-        args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save 50-LR_0.005 --is_parallel 1"]
+        # args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save 50-LR_0.005 --is_parallel 1"]
+        args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save DEBUG --is_parallel 1"]
         # command: ["bash","train.sh"]
         # command: ["/bin/bash", "-c"]
         # args: ["pwd && ls; bash train.sh"]
