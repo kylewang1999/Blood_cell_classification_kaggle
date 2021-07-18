@@ -168,31 +168,31 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
         # Logging for dubgging
         print("train_q: {} | valid_q: {} | external_q: {}".format(
             len(train_queue), len(valid_queue), len(external_queue)))
-        for step, data in enumerate(train_queue):
-            input = data['image']
-            target = data['label']
-            if step == 10:
-                print(input.size)
-                print(target.numpy())
-            if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
-                print("SOMETHING IS WRONG WITH TRAIN QUEUE")
-        for step, data in enumerate(valid_queue):
-            input = data['image']
-            target = data['label']
-            if step == 10:
-                print(input.size)
-                print(target.numpy())
-            if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
-                print("SOMETHING IS WRONG WITH VALID QUEUE")
-        for step, data in enumerate(external_queue):
-            input = data['image']
-            target = data['label']
-            if step == 10:
-                print(input.size)
-                print(target.numpy())
-            if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
-                print("SOMETHING IS WRONG WITH EXTERNAL QUEUE")
-            # print(target.numpy)
+        # for step, data in enumerate(train_queue):
+        #     input = data['image']
+        #     target = data['label']
+        #     if step == 10:
+        #         print(input.size)
+        #         print(target.numpy())
+        #     if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
+        #         print("SOMETHING IS WRONG WITH TRAIN QUEUE")
+        # for step, data in enumerate(valid_queue):
+        #     input = data['image']
+        #     target = data['label']
+        #     if step == 10:
+        #         print(input.size)
+        #         print(target.numpy())
+        #     if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
+        #         print("SOMETHING IS WRONG WITH VALID QUEUE")
+        # for step, data in enumerate(external_queue):
+        #     input = data['image']
+        #     target = data['label']
+        #     if step == 10:
+        #         print(input.size)
+        #         print(target.numpy())
+        #     if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
+        #         print("SOMETHING IS WRONG WITH EXTERNAL QUEUE")
+        #     # print(target.numpy)
         
         return train_queue, valid_queue, external_queue
         
