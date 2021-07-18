@@ -287,7 +287,7 @@ def train(train_queue, valid_queue, external_queue,
     input_search = input_search.to("cuda", dtype=torch.float)
     target_search = target_search.to("cuda", dtype=torch.long) 
 
-    data_external= next(iter(valid_queue))
+    data_external= next(iter(external_queue))
     input_external = data_external['image']
     target_external = data_external['label']
     input_external = input_external.to("cuda", dtype=torch.float)
@@ -332,7 +332,8 @@ def train(train_queue, valid_queue, external_queue,
     # update the model parameter.
     optimizer.zero_grad()
     logits = model(input)
-    loss = criterion(logits, target)
+    # loss = criterion(logits, target)
+    loss = criterion(logits + 1e-12, target)
 
     loss.backward()
     nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)

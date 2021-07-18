@@ -164,8 +164,17 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
             sampler=torch.utils.data.sampler.SubsetRandomSampler(
                 indices[split:num_train]),
             pin_memory=False, num_workers=4)
+
+        # Logging for dubgging
         print("train_q: {} | valid_q: {} | external_q: {}".format(
             len(train_queue), len(valid_queue), len(external_queue)))
+        for step, data in enumerate(train_queue):
+            input = data['image']
+            target = data['label']
+            if np.isnan(input.numpy()) or np.isinf(input.numpy()):
+                print("SOMETHING IS WRONG WITH DATASET")
+            print(target.numpy)
+        
         return train_queue, valid_queue, external_queue
         
     else:

@@ -19,7 +19,7 @@ spec:
         imagePullPolicy: Always
         workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
         command: ["/bin/bash", "-c"]
-        args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save 50-WITH_AUX --is_parallel 1"]
+        args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save 50-LR_0.005 --is_parallel 1"]
         # command: ["bash","train.sh"]
         # command: ["/bin/bash", "-c"]
         # args: ["pwd && ls; bash train.sh"]
@@ -27,11 +27,11 @@ spec:
           requests:
             memory: "16Gi"
             cpu: "2"
-            nvidia.com/gpu: 4
+            nvidia.com/gpu: 5
           limits:
             memory: "16Gi"
             cpu: "2"
-            nvidia.com/gpu: 4
+            nvidia.com/gpu: 5
 
         volumeMounts:
         - name: k5wang-volume     #use your own volume path
