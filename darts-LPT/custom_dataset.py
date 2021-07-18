@@ -173,7 +173,7 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
             target = data['label']
             if np.any(np.isnan(input.numpy())) or np.all(np.isinf(input.numpy())):
                 print("SOMETHING IS WRONG WITH DATASET")
-            print(target.numpy)
+            # print(target.numpy)
         
         return train_queue, valid_queue, external_queue
         
