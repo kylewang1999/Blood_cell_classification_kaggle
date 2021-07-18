@@ -27,11 +27,11 @@ spec:
           requests:
             memory: "12Gi"
             cpu: "2"
-            nvidia.com/gpu: 2
+            nvidia.com/gpu: 4
           limits:
             memory: "12Gi"
             cpu: "2"
-            nvidia.com/gpu: 2
+            nvidia.com/gpu: 4
 
         volumeMounts:
         - name: k5wang-volume     #use your own volume path
@@ -54,4 +54,4 @@ spec:
               - key: gpu-type
                 operator: In # Use NotIn for other types
                 values:
-                - 1080Ti
+                - 2080Ti
