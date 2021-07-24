@@ -13,7 +13,11 @@
 
 - [Pytorch Pipeline Example](https://www.kaggle.com/hasanmoni/pytorch-resnet34)  |  [Preprocessing Example](https://www.kaggle.com/kylewang1999/classify-blood-cell-subtypes-all-process/edit)
 
-- [Cluster Startup Doc](https://docs.google.com/document/d/1DuYSFYcDwdT9L4Vc-8m5HHBC_pQB2FgWvtK_xZR8nEk/edit)  |  [UCSD-PRP Doc - Gitlab](https://gitlab.com/ucsd-prp/ucsd-prp.gitlab.io/-/tree/master/_userdocs) | [Nautilus Guide - Github](https://github.com/Adamdad/nautilus_cluster_guide)
+- [Cluster Startup Doc](https://docs.google.com/document/d/1DuYSFYcDwdT9L4Vc-8m5HHBC_pQB2FgWvtK_xZR8nEk/edit)  |  [UCSD-PRP Doc - Gitlab](https://gitlab.com/ucsd-prp/ucsd-prp.gitlab.io/-/tree/master/_userdocs) | [Nautilus Guide - Github](https://github.com/Adamdad/nautilus_cluster_guide) | [Matrix](https://element.nrp-nautilus.io/#/room/#general:matrix.nrp-nautilus.io)
+
+- [Monitoring](https://pacificresearchplatform.org/userdocs/running/monitoring/) | [Hi I/O Jobs](https://pacificresearchplatform.org/userdocs/running/io-jobs/)
+
+- [Checkout your POD's GPU Utilization](https://grafana.nrp-nautilus.io/d/dRG9q0Ymz/k8s-compute-resources-namespace-gpus?var-namespace=ecepxie&orgId=1&refresh=30s)
 
 ## I. First Time Use  
 
@@ -95,38 +99,129 @@ kubectl cp kaggle ecepxie/k5wang-login:k5wang-volume/Blood_cell_classification_k
 
 2. Git (suggested for code transfer). You can git push your code on the repo and pull them on the cluster. This method can additionally maintain history of your code, and increase efficiency if collaboration is needed.
 
-## IV. Exmaple of login.yaml
-> This is a Pod. ***NEVER*** use ```args: ["-c", "sleep infinity"]``` for a Job
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: <your-user-name>-login
-spec:
-  containers:
-  - name: vol-container
-    image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
-    command: ["/bin/bash"]
-    args: ["-c", "sleep infinity"]
-    resources:
-      requests:
-        memory: "8Gi"
-        cpu: 2
-      limits:
-        nvidia.com/gpu: 1
-        memory: "8Gi"
-        cpu: 2
-    volumeMounts:
-    - name: haoban-volume     #use your own **volume** path
-      mountPath: /haoban-volume
-  restartPolicy: Never
-  volumes:
-    - name: haoban-volume
-      persistentVolumeClaim:
-        claimName: haoban-volume
-  nodeSelector:
-    gpu-type: "1080Ti"
-```
+## IV. Configuration```.yaml ``` Examples
+
+**[login.yaml](./login.yaml)**: Create a login pod/[deployement](https://gitlab.com/ucsd-prp/ucsd-prp.gitlab.io/-/blob/master/_userdocs/running/long-idle.md) that uses minimal Resources | [More on Delpoyment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+  ```yaml
+  # This is a Pod. NEVER use args: ["-c", "sleep infinity"] for a Job
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: k5wang-login  # Replace with your username
+  spec:
+    containers:
+    - name: vol-container
+      image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
+      command: ["/bin/bash"]
+      args: ["-c", "sleep infinity"]
+      resources:
+        requests:
+          memory: "8Gi"
+          cpu: 1
+        limits:
+          # nvidia.com/gpu: 1
+          memory: "8Gi"
+          cpu: 1
+      volumeMounts:
+      - name: k5wang-volume     #use your own volume path
+        mountPath: /k5wang-volume
+      - name: k5wang-volume-datasets
+        mountPath: /k5wang-volume-datasets
+    restartPolicy: Never
+    volumes:
+      - name: k5wang-volume
+        persistentVolumeClaim:
+          claimName: k5wang-volume
+      - name: k5wang-volume-datasets
+        persistentVolumeClaim:
+          claimName: k5wang-volume-datasets
+    # nodeSelector:
+    #   gpu-type: "1080Ti"
+
+  # An example of nginx deployment
+  # apiVersion: apps/v1
+  # kind: Deployment
+  # metadata:
+  #   name: nginx-deployment
+  #   labels:
+  #     k8s-app: nginx
+  # spec:
+  #   replicas: 1
+  #   selector:
+  #     matchLabels:
+  #       k8s-app: nginx
+  #   template:
+  #     metadata:
+  #       labels:
+  #         k8s-app: nginx
+  #     spec:
+  #       containers:
+  #       - image: nginx
+  #         name: nginx-pod
+  #         resources:
+  #           limits:
+  #             cpu: 1
+  #             memory: 4Gi
+  #           requests:
+  #             cpu: 100m
+  #             memory: 500Mi
+  ```
+
+**[job.yaml for Hi I/O Jobs:]()** | More on [Hi I/O Jobs](https://pacificresearchplatform.org/userdocs/running/io-jobs/); [Local](https://pacificresearchplatform.org/userdocs/storage/local/)
+  ```yaml
+  apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: myapp
+  spec:
+    template:
+      spec:
+        containers:
+        - name: demo
+          image: gitlab-registry.nrp-nautilus.io/prp/jupyter-stack/prp
+          command:
+          - "python"
+          args:
+          - "/home/my_script.py"
+          - "--data=/mnt/data/..."
+          volumeMounts:
+          - name: data
+            mountPath: /mnt/data
+          resources:
+            limits:
+              memory: 8Gi
+              cpu: "6"
+              nvidia.com/gpu: "1"
+              ephemeral-storage: 100Gi
+            requests:
+              memory: 4Gi
+              cpu: "1"
+              nvidia.com/gpu: "1"    
+              ephemeral-storage: 100Gi
+        initContainers:
+        - name: init-data
+          image: gitlab-registry.nrp-nautilus.io/prp/gsutil
+          args:
+            - gsutil
+            - "-m"
+            - rsync
+            - "-erP"
+            - /mnt/source/
+            - /mnt/dest/
+          volumeMounts:
+            - name: source
+              mountPath: /mnt/source
+            - name: data
+              mountPath: /mnt/dest
+        volumes:
+        - name: data
+          emptyDir: {}
+        - name: source
+          persistentVolumeClaim:
+              claimName: examplevol
+        restartPolicy: Never
+    backoffLimit: 5
+  ```
 
 ## V. Useful bash knowledge
 [**Understanding Bash**](https://unix.stackexchange.com/questions/129143/what-is-the-purpose-of-bashrc-and-how-does-it-work)
@@ -140,28 +235,28 @@ alias alias_name="command_to_run"
 
 [**Set Multiple alias by modifying ```~/.bash_profile```**](https://askubuntu.com/a/606882): 
   
-  1. Add the following to ~/.bash_profile
-```bash
+1. Add the following to ~/.bash_profile
+    ```bash
     # Step1: Add the following to ~/.bash_profile
     if [ -f ~/.bash_aliases ]; then
       . ~/.bash_aliases
     fi
-```
-  2. Add desired aliases to ~/.bash_aliases, such as
-```bash
-alias kube="kubectl"
-alias getpods="kubectl get pods | grep k5wang"
-alias getjobs="kubectl get jobs | grep k5wang"
-alias get="getpods && getjobs"
-alias logs="kubectl logs -l name=k5wang_train"
-alias kubelogin="kubectl create -f login.yaml"
-alias kubelogout="kubectl delete -f login.yaml"
-alias kubeexec="kubectl exec -it k5wang-login bash"
-alias p="pwd"
-alias weight_path="/k5wang-volume/Blood_cell_classification_kaggle/cluster/eval-EXP-CIFAR-25EPOCHS"
-alias test="python test_colab.py --model_path ../cluster/eval-EXP-CIFAR-25EPOCHS/weights.pt"
-```
-3. Remember to restart the shell to make the change take 
+    ```
+2. Add desired aliases to ~/.bash_aliases, such as
+    ```bash
+    alias kube="kubectl"
+    alias getpods="kubectl get pods | grep k5wang"
+    alias getjobs="kubectl get jobs | grep k5wang"
+    alias get="getpods && getjobs"
+    alias logs="kubectl logs -l name=k5wang_train"
+    alias kubelogin="kubectl create -f login.yaml"
+    alias kubelogout="kubectl delete -f login.yaml"
+    alias kubeexec="kubectl exec -it k5wang-login bash"
+    alias p="pwd"
+    alias weight_path="/k5wang-volume/Blood_cell_classification_kaggle/cluster/eval-EXP-CIFAR-25EPOCHS"
+    alias test="python test_colab.py --model_path ../cluster/eval-EXP-CIFAR-25EPOCHS/weights.pt"
+    ```
+2. Remember to restart the shell to make the change take 
 
 [**Delete failed pods**](https://gist.github.com/zparnold/0e72d7d3563da2704b900e3b953a8229): 
   ```bash
@@ -190,6 +285,10 @@ Executing a job will likely create multiple pods with non-human-friendly suffixe
     ```bash
     kubectl delete pods -l ${label_key}=${label_value}
     ```
+**Check Dir Size**
+  ```bash
+  du -hs
+  ```
 
 ## VI. Train / Test Command
 **Composing LPT with DARTS:**

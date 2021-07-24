@@ -19,20 +19,24 @@ spec:
         memory: "12Gi"
         cpu: "2"
     volumeMounts:
+    - name: local
+      mountPath: /local
     - name: k5wang-volume     #use your own volume path
       mountPath: /k5wang-volume
     - name: k5wang-volume-datasets
       mountPath: /k5wang-volume-datasets
   restartPolicy: Never
   volumes:
+    - name: local
+      emptyDir: {}
     - name: k5wang-volume
       persistentVolumeClaim:
         claimName: k5wang-volume
     - name: k5wang-volume-datasets
       persistentVolumeClaim:
         claimName: k5wang-volume-datasets
-  nodeSelector:
-    gpu-type: "2080Ti"
+  # nodeSelector:
+  #   gpu-type: "2080Ti"
 
 
 

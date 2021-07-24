@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: Job # Deployment will automatically restart when killed. Use Pod if not needed
+metadata:
+  # labels:
+  #   k8s-app: research
+  # generateName: k5wang-job-train     # Name of Job
+  name: k5wang-job-gpu_debug
+  namespace: ecepxie
+spec:
+  template:
+    metadata:
+      labels:
+        name: k5wang-train
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: research
+        image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
+        imagePullPolicy: Always
+        workingDir: /local
+        # workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
+        
+        # command: ["/bin/bash", "-c"]
+        # args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save 50-LR_0.005-FIXED_LOSS --is_parallel 1, --gpu 0,1"]
+        
+        command: ["/bin/bash", "-c"]
+        args: [“bash /local/Blood_cell_classification_kaggle/cluster/bash/job_gpu_debug.yaml"]
+        
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "2"
+            nvidia.com/gpu: 1
+          limits:
+            memory: "16Gi"
+            cpu: "2"
+            nvidia.com/gpu: 1
+
+        volumeMounts:
+        - name: local
+          mountPath: /local
+        - name: k5wang-volume     #use your own volume path
+          mountPath: /k5wang-volume
+        - name: k5wang-volume-datasets
+          mountPath: /k5wang-volume-datasets
+    
+      volumes:
+        - name: local
+          emptyDir: {}
+        - name: k5wang-volume
+          persistentVolumeClaim:
+            claimName: k5wang-volume
+        - name: k5wang-volume-datasets
+          persistentVolumeClaim:
+            claimName: k5wang-volume-datasets
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: gpu-type
+                operator: In # Use NotIn for other types
+                values:
+                - 2080Ti

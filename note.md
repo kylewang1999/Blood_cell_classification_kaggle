@@ -1,4 +1,4 @@
-# Keeps track of TODO's and BUGs
+# Keeps track of TODO's and BUG's
 
 ## TODO
 
@@ -8,9 +8,17 @@
 
 3. ~~Fix training with auxiliary enabled~~
 
-4. Perform NAS from scratch
+4. Adapt to Hi I/O jobs to increase GPU utilization 
 
-5. Visualize Training with tensorboard
+5. Monitor GPU Usage of Pods/Jobs
+   
+5. Perform NAS from scratch
+
+6. Understand LPT Optimization Algo.
+
+7. Derive image captioning Optim. Algo.
+
+8. Visualize Training (Tensorboard?)
 
 ## Bug Journal
 
@@ -49,11 +57,17 @@
 
 11. First 1500 training steps runs fine until the loss fails to evaluate at the 1550th step.
 
-    > **Possible Cause 1:**
-    Image or image labels may contain ```"Nan"``` values
-    > **Possible Cause 2:**
-    Reduce learning rate (network learning rate) **NOT** ~~arch_learning_rate~~
+    **Possible Cause 1 (Unlikely): Invalid image or label**
+    > Remove image or image labels that contain ```"Nan"``` values
+
+    **Possible Cause 2: Complex loss surface or computing zero log**
+    > Reduce learning rate (network learning rate) **NOT** ~~arch_learning_rate~~
+    Change loss function to ```loss = criterion(logits + 1e-12, target)```
 
 12. train_search_ts.py ```infer()```  works fine during first 200 steps, then halts because of ```illegal memory access```
     >  Possible reason is the incompatibility of PyTorch and CUDA
-    > Changing GPU device from 1080Ti to 2080Ti
+    > Changing GPU device from ~~**1080Ti**~~ to **2080Ti**
+
+13. Low GPU Utilization
+    > This is due to [hi I/O](https://pacificresearchplatform.org/userdocs/running/io-jobs/) access to persistent volume claim
+    
