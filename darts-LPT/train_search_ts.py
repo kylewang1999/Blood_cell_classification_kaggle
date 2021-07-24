@@ -24,7 +24,7 @@ import custom_dataset
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--data', type=str, default='../data',
                     help='location of the data corpus')
-parser.add_argument('--batch_size', type=int, default=1, help='batch size')
+parser.add_argument('--batch_size', type=int, default=3, help='batch size')
 # parser.add_argument('--learning_rate', type=float,
 #                     default=0.025, help='init learning rate')
 # parser.add_argument('--learning_rate', type=float,
@@ -187,6 +187,7 @@ def main():
   train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
   train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
     train_data, _, args.batch_size, train_search=True)
+  torch.cuda.empty_cache()  # Clear GPU Memory
   
   # num_train = len(train_data)
   # indices = list(range(num_train))

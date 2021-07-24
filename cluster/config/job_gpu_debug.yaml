@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-job-gpu_debug
+  name: k5wang-job-debug
   namespace: ecepxie
 spec:
   template:
@@ -23,8 +23,7 @@ spec:
         # command: ["/bin/bash", "-c"]
         # args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save 50-LR_0.005-FIXED_LOSS --is_parallel 1, --gpu 0,1"]
         
-        command: ["/bin/bash", "-c"]
-        args: [“bash /local/Blood_cell_classification_kaggle/cluster/bash/gpu_debug.sh"]
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/gpu_debug.sh"]
         
         resources:
           requests:
