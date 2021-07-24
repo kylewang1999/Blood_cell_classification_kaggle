@@ -36,8 +36,8 @@ class Custom_Dataset(Dataset):
         # image = cv2.resize(image, (128,128)).astype(float)
         # image = self.transform(image=np.array(image))['image']
         # image = np.transpose(image, (2, 0, 1)).astype(np.float) 
-        image = Image.open(image)
-        image = image.resize((128,128))
+        image = Image.open(image)  # Already resized to 128*128
+        # image = image.resize((128,128))
         # print("Image dimension after resizing: {}".format(image.size))
         image = self.transform(image)
         return {

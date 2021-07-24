@@ -111,7 +111,7 @@ def main():
     logging.info('gpu device = %d' % int(args.gpu))
   else:
     logging.info('gpu device = %s' % args.gpu)
-  cudnn.benchmark = True
+  # cudnn.benchmark = True    # Occupies lots of GPU memory
   torch.manual_seed(args.seed)
   cudnn.enabled = True
   torch.cuda.manual_seed(args.seed)
@@ -188,7 +188,7 @@ def main():
   train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
     train_data, _, args.batch_size, train_search=True)
   torch.cuda.empty_cache()  # Clear GPU Memory
-  
+
   # num_train = len(train_data)
   # indices = list(range(num_train))
   # split = int(np.floor(args.train_portion * num_train))
