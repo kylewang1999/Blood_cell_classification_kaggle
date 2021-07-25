@@ -80,7 +80,8 @@ parser.add_argument('--weight_decay_h', type=float, default=3e-4)
 parser.add_argument('--is_parallel', type=int, default=0)
 parser.add_argument('--teacher_arch', type=str, default='18')
 parser.add_argument('--is_cifar100', type=int, default=0)
-parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
+parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
+# parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='/content/drive/MyDrive/kaggle/blood_cell/', help='location of the data corpus')
 args = parser.parse_args()
 
@@ -253,7 +254,7 @@ def main():
     logging.info('valid_acc %f', valid_acc)
     # logging.info('external_acc %f', external_acc)
 
-    # utils.save(model, os.path.join(args.save, 'weights.pt'))
+    utils.save(model, os.path.join(args.save, 'weights.pt'))
 
 
 def train(train_queue, valid_queue, external_queue,
