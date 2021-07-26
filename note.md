@@ -70,4 +70,6 @@
 
 13. Low GPU Utilization
     > This is due to [hi I/O](https://pacificresearchplatform.org/userdocs/running/io-jobs/) access to persistent volume claim
-    
+
+    > The resizing part in the preprocessing procedure also ontribute to thsi issue.
+        ---> Solve this by storing resized images separately before training, instead of resizing as the model retrives the image

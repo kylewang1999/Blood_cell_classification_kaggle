@@ -1,9 +1,15 @@
-#!/usr/bin/env bash
-# nvidia-smi
-# conda env create -f environment.yml
-# source activate yxy
-# pip install Pillow==6.2.2
-# pip install pydicom
-# pip install --upgrade efficientnet-pytorch
-# pwd && ls
-python ../darts-LPT/train_custom_colab.py --epochs 50 --save CIFAR-50-WITH_AUX 
+# Setting up working dir
+echo Start Copying
+SECONDS=0           # Tracking Time Elapsed
+cp -r /k5wang-volume/Blood_cell_classification_kaggle/kaggle /local/kaggle
+# cd /local/Blood_cell_classification_kaggle/darts-LPT/
+cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
+pwd
+echo Copying DONE. 
+duration=$SECONDS   # Displaying Time Elapsed
+echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
+
+
+# Single GPU
+python train_custom_local.py --batch_size 10 --epochs 50 --save SEARCH_TS_WAUX
+

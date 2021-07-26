@@ -59,6 +59,7 @@ spec:
             - matchExpressions:
               - key: gpu-type
                 operator: In # Use NotIn for other types
-                values: 1080Ti 
+                values: 
+                  - 1080Ti
                 # - 2080Ti
 

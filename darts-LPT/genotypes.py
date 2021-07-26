@@ -13,6 +13,18 @@ PRIMITIVES = [
     'dil_conv_5x5'
 ]
 
+DARTS_TS_BC_25EPOCH = Genotype(
+        normal=[('sep_conv_5x5', 1), 
+        ('sep_conv_5x5', 0), ('sep_conv_3x3', 2), ('sep_conv_5x5', 1), 
+        ('sep_conv_5x5', 1), ('sep_conv_3x3', 3), 
+        ('sep_conv_5x5', 1), ('sep_conv_3x3', 4)], 
+        normal_concat=range(2, 6), 
+        reduce=[('sep_conv_5x5', 1), 
+        ('dil_conv_5x5', 0), ('sep_conv_5x5', 2), 
+        ('sep_conv_5x5', 1), ('dil_conv_3x3', 3), 
+        ('sep_conv_5x5', 2), ('dil_conv_5x5', 4), 
+        ('dil_conv_3x3', 1)], reduce_concat=range(2, 6))
+
 PDARTS_TS_CIFAR10 = Genotype(
     normal=[('sep_conv_3x3', 0), 
     ('sep_conv_3x3', 1), 
