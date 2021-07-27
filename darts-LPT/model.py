@@ -3,6 +3,8 @@ import torch.nn as nn
 from operations import *
 from torch.autograd import Variable
 from utils import drop_path
+import os
+import utils
 
 
 class Cell(nn.Module):
@@ -167,6 +169,11 @@ class NetworkCIFAR(nn.Module):
     self.classifier = nn.Linear(C_prev, num_classes)
 
   def forward(self, input):
+    # Memory usage
+    total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
+    # print("Total Mem: {} MB".format(utils.count_parameters_in_MB(model)))
+    print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
+
     logits_aux = None
     s0 = s1 = self.stem(input)
     for i, cell in enumerate(self.cells):
