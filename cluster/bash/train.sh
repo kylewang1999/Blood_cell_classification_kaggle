@@ -8,4 +8,6 @@ echo Copying DONE.
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
-python train_custom_local.py --batch_size 3 --arch DARTS_TS_BC_25EPOCH --epochs 50 --save SEARCH_TS_WAUX
+python train_custom.py --batch_size 3 --arch DARTS_TS_BC_25EPOCH --epochs 50 --save SEARCH_TS_WAUX
+
+#python train_custom_colab.py --batch_size 20 --epochs 50 --save FOO --dataset_path ../kaggle/blood_cell/

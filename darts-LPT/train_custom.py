@@ -23,13 +23,13 @@ import custom_dataset
 
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--data', type=str, default='../data', help='location of the data corpus')
-parser.add_argument('--batch_size', type=int, default=10, help='batch size')
+parser.add_argument('--batch_size', type=int, default=8, help='batch size')
 parser.add_argument('--learning_rate', type=float, default=0.025, help='init learning rate')
 parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
 parser.add_argument('--weight_decay', type=float, default=3e-4, help='weight decay')
 parser.add_argument('--report_freq', type=float, default=50, help='report frequency')
 parser.add_argument('--gpu', type=int, default=0, help='gpu device id')
-parser.add_argument('--epochs', type=int, default=600, help='num of training epochs')
+parser.add_argument('--epochs', type=int, default=50, help='num of training epochs')
 parser.add_argument('--init_channels', type=int, default=36, help='num of init channels')
 parser.add_argument('--layers', type=int, default=20, help='total number of layers')
 parser.add_argument('--model_path', type=str, default='saved_models', help='path to save the model')
@@ -66,27 +66,27 @@ def save_checkpoint(state, checkpoint=args.save, filename='checkpoint.pth.tar'):
     torch.save(state, filepath)
 
 def main():
-  # if not torch.cuda.is_available():
-  #   logging.info('no gpu device available')
-  #   sys.exit(1)
+  if not torch.cuda.is_available():
+    logging.info('no gpu device available')
+    sys.exit(1)
 
   np.random.seed(args.seed)
-  # torch.cuda.set_device(args.gpu)
+  torch.cuda.set_device(args.gpu)
   cudnn.benchmark = True
   torch.manual_seed(args.seed)
   cudnn.enabled=True
-  # torch.cuda.manual_seed(args.seed)
+  torch.cuda.manual_seed(args.seed)
   logging.info('gpu device = %d' % args.gpu)
   logging.info("args = %s", args)
 
   genotype = eval("genotypes.%s" % args.arch)
   model = Network(args.init_channels, NUM_CLASSES, args.layers, args.auxiliary, genotype)
-  # model = model.cuda()
+  model = model.cuda()
 
   logging.info("param size = %fMB", utils.count_parameters_in_MB(model))
 
   criterion = nn.CrossEntropyLoss()
-  # criterion = criterion.cuda()
+  criterion = criterion.cuda()
   optimizer = torch.optim.SGD(
       model.parameters(),
       args.learning_rate,
@@ -97,7 +97,7 @@ def main():
   # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
   # dataset_path = "./kaggle/blood_cell/" # Path for local
   dataset_path = args.dataset_path
-  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path)
+  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) # True means using colab
   train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
@@ -139,8 +139,8 @@ def train(train_queue, model, criterion, optimizer):
   for step, data in enumerate(train_queue):
     input = data['image']
     target = data['label']
-    # input = input.to("cuda", dtype=torch.float)
-    # target = target.to("cuda", dtype=torch.long) 
+    input = input.to("cuda", dtype=torch.float)
+    target = target.to("cuda", dtype=torch.long) 
 
     optimizer.zero_grad()
     logits, logits_aux = model(input)
@@ -177,6 +177,8 @@ def infer(valid_queue, model, criterion):
     for step, data in enumerate(valid_queue):
         input = data['image']
         target = data['label']
+        input = input.to("cuda", dtype=torch.float)
+        target = target.to("cuda", dtype=torch.long) 
 
         logits, _ = model(input)
         loss = criterion(logits, target)

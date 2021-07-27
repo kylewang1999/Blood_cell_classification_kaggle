@@ -73,3 +73,5 @@
 
     > The resizing part in the preprocessing procedure also ontribute to thsi issue.
         ---> Solve this by storing resized images separately before training, instead of resizing as the model retrives the image
+
+14. GPU Memory Issue: Can only support batchsize 5
