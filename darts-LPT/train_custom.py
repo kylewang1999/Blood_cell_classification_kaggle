@@ -109,10 +109,6 @@ def main():
     optimizer.load_state_dict(checkpoint['optimizer'])
     scheduler.load_state_dict(checkpoint['scheduler'])
 
-  # Memory usage
-  total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
-  print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
-
   for epoch in range(start_epoch, args.epochs):
     logging.info('epoch %d lr %e', epoch, scheduler.get_lr()[0])
     model.drop_path_prob = args.drop_path_prob * epoch / args.epochs
@@ -137,6 +133,10 @@ def train(train_queue, model, criterion, optimizer):
   top1 = utils.AvgrageMeter()
   top5 = utils.AvgrageMeter()
   model.train()
+  
+  # Memory usage
+  total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
+  print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
 
   # for step, (input, target) in enumerate(train_queue):
   #   input = input.cuda()
