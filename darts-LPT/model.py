@@ -3,8 +3,6 @@ import torch.nn as nn
 from operations import *
 from torch.autograd import Variable
 from utils import drop_path
-
-import os
 import utils
 
 
@@ -170,6 +168,8 @@ class NetworkCIFAR(nn.Module):
     self.classifier = nn.Linear(C_prev, num_classes)
 
   def forward(self, input):
+    #Memory Usage
+    print("GPU MEM FREE: {} MB".format(utils.get_gpu_memory()))
     logits_aux = None
     s0 = s1 = self.stem(input)
     for i, cell in enumerate(self.cells):
