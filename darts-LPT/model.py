@@ -171,7 +171,7 @@ class NetworkCIFAR(nn.Module):
   def forward(self, input):
     # Memory usage
     total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
-    # print("Total Mem: {} MB".format(utils.count_parameters_in_MB(model)))
+    print("MEMORY: Total-{} | Used-{} | Free-{}".format(total_memory, used_memory, free_memory))
     print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
 
     logits_aux = None
