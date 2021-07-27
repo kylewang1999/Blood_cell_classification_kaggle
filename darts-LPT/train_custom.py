@@ -133,10 +133,6 @@ def train(train_queue, model, criterion, optimizer):
   top1 = utils.AvgrageMeter()
   top5 = utils.AvgrageMeter()
   model.train()
-  
-  # Memory usage
-  total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
-  print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
 
   # for step, (input, target) in enumerate(train_queue):
   #   input = input.cuda()
@@ -148,6 +144,11 @@ def train(train_queue, model, criterion, optimizer):
     target = target.to("cuda", dtype=torch.long) 
 
     optimizer.zero_grad()
+
+    # Memory usage
+    total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
+    print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
+
     logits, logits_aux = model(input)
     loss = criterion(logits, target)
     if args.auxiliary:
