@@ -9,6 +9,7 @@ alias kubelogout="kubectl delete -f config/login.yaml"
 alias kubeexec="kubectl exec -it k5wang-login bash"
 alias exe="kubeexec"
 alias p="pwd"
+alias chdir="cd k5wang-volume/Blood_cell_classification_kaggle/darts-LPT/"
 alias weight_path="/k5wang-volume/Blood_cell_classification_kaggle/cluster/eval-EXP-CIFAR-25EPOCHS"
 alias test="python test_colab.py --model_path ../cluster/eval-EXP-CIFAR-25EPOCHS/weights.pt"
 #/k5wang-volume/Blood_cell_classification_kaggle/cluster

@@ -161,7 +161,7 @@ def train(train_queue, model, criterion, optimizer):
 
     if step % args.report_freq == 0:
       logging.info('train %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
-      print("Model Size: {} MB".format(sys.getsizeof(model) / 1024))
+      print("Model Size: {} MB".format(utils.count_parameters_in_MB(model)))
       print("Data Size: {} MB".format(sys.getsizeof(train_queue) / 1024))
       print("Loss Size: {} MB".format(sys.getsizeof(loss) / 1024))
   return top1.avg, objs.avg
