@@ -45,10 +45,6 @@ class Cell(nn.Module):
     s0 = self.preprocess0(s0)
     s1 = self.preprocess1(s1)
     states = [s0, s1]
-    
-    total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
-    print("MEMORY: Total-{} | Used-{} | Free-{}".format(total_memory, used_memory, free_memory))
-    print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
 
     for i in range(self._steps):
       h1 = states[self._indices[2*i]]
@@ -174,11 +170,6 @@ class NetworkCIFAR(nn.Module):
     self.classifier = nn.Linear(C_prev, num_classes)
 
   def forward(self, input):
-    # Memory usage
-    total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
-    print("MEMORY: Total-{} | Used-{} | Free-{}".format(total_memory, used_memory, free_memory))
-    print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
-
     logits_aux = None
     s0 = s1 = self.stem(input)
     for i, cell in enumerate(self.cells):
