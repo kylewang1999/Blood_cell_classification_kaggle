@@ -103,6 +103,9 @@ def main():
   train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) # True means using colab
   train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
 
+  #Memory Usage
+  print("GPU MEM FREE: {} MB".format(utils.get_gpu_memory()))
+
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
   start_epoch = 0
   if args.resume:
@@ -115,6 +118,9 @@ def main():
   for epoch in range(start_epoch, args.epochs):
     logging.info('epoch %d lr %e', epoch, scheduler.get_lr()[0])
     model.drop_path_prob = args.drop_path_prob * epoch / args.epochs
+
+    #Memory Usage
+    print("GPU MEM FREE: {} MB".format(utils.get_gpu_memory()))
 
     train_acc, train_obj = train(train_queue, model, criterion, optimizer)
     scheduler.step()
@@ -164,8 +170,7 @@ def train(train_queue, model, criterion, optimizer):
 
     if step % args.report_freq == 0:
       logging.info('train %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
-      #Memory Usage
-      print("GPU MEM FREE: {} MB".format(utils.get_gpu_memory()))
+
   return top1.avg, objs.avg
 
 
