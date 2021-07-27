@@ -108,6 +108,10 @@ def main():
     model.load_state_dict(checkpoint['state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer'])
     scheduler.load_state_dict(checkpoint['scheduler'])
+
+  print("Model Size: {} MB".format(sys.getsizeof(model) / 1024))
+  print("Data Size: {} MB".format((sys.getsizeof(train_queue)+ sys.getsizeof(valid_queue)) / 1024))
+
   for epoch in range(start_epoch, args.epochs):
     logging.info('epoch %d lr %e', epoch, scheduler.get_lr()[0])
     model.drop_path_prob = args.drop_path_prob * epoch / args.epochs
