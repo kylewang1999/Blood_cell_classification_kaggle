@@ -66,10 +66,10 @@ def save_checkpoint(state, checkpoint=args.save, filename='checkpoint.pth.tar'):
     torch.save(state, filepath)
 
 def main():
-  # Memory Usage
-  total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
-  print("MEMORY: Total-{} | Used-{} | Free-{}".format(total_memory, used_memory, free_memory))
-  print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
+  # # Memory Usage
+  # total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
+  # print("MEMORY: Total-{} | Used-{} | Free-{}".format(total_memory, used_memory, free_memory))
+  print("GPU MEM FREE: {}".format(utils.get_gpu_memory()))
 
   if not torch.cuda.is_available():
     logging.info('no gpu device available')

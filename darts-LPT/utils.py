@@ -4,6 +4,7 @@ import torch
 import shutil
 import torchvision.transforms as transforms
 from torch.autograd import Variable
+import subprocess as sp
 
 
 class AvgrageMeter(object):
@@ -143,4 +144,16 @@ def create_exp_dir(path, scripts_to_save=None):
     for script in scripts_to_save:
       dst_file = os.path.join(path, 'scripts', os.path.basename(script))
       shutil.copyfile(script, dst_file)
+
+
+def get_gpu_memory():
+  _output_to_list = lambda x: x.decode('ascii').split('\n')[:-1]
+
+  ACCEPTABLE_AVAILABLE_MEMORY = 1024
+  COMMAND = "nvidia-smi --query-gpu=memory.free --format=csv"
+  memory_free_info = _output_to_list(sp.check_output(COMMAND.split()))[1:]
+  memory_free_values = [int(x.split()[0]) for i, x in enumerate(memory_free_info)]
+  print(memory_free_values)
+  return memory_free_values
+
 
