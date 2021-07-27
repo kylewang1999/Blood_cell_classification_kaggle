@@ -105,6 +105,11 @@ def main():
   train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) # True means using colab
   train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
 
+  # Memory Usage
+  total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
+  print("MEMORY: Total-{} | Used-{} | Free-{}".format(total_memory, used_memory, free_memory))
+  print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
+
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
   start_epoch = 0
   if args.resume:
@@ -113,6 +118,11 @@ def main():
     model.load_state_dict(checkpoint['state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer'])
     scheduler.load_state_dict(checkpoint['scheduler'])
+  
+  # Memory Usage
+  total_memory, used_memory, free_memory = map(int, os.popen('free -t -m').readlines()[-1].split()[1:])
+  print("MEMORY: Total-{} | Used-{} | Free-{}".format(total_memory, used_memory, free_memory))
+  print("RAM memory % used:", round((used_memory/total_memory) * 100, 2))
 
   for epoch in range(start_epoch, args.epochs):
     logging.info('epoch %d lr %e', epoch, scheduler.get_lr()[0])
