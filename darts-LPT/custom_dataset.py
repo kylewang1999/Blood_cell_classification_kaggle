@@ -210,6 +210,8 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
             shuffle = False,
             num_workers = 4)
 
+        print("x_train: {} | x_valid: {} ".format(
+            len(x_train), len(x_valid)))
         print("train_q: {} | valid_q: {} ".format(
             len(train_queue), len(valid_queue)))
         return train_queue, valid_queue
