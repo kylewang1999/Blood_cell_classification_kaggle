@@ -150,6 +150,8 @@ class NetworkCIFAR(nn.Module):
     self.cells = nn.ModuleList()
     reduction_prev = False
     for i in range(layers):
+      #Memory Usage
+      print("GPU MEM FREE: {} MB".format(utils.get_gpu_memory()))
       if i in [layers//3, 2*layers//3]:
         C_curr *= 2
         reduction = True
@@ -168,8 +170,6 @@ class NetworkCIFAR(nn.Module):
     self.classifier = nn.Linear(C_prev, num_classes)
 
   def forward(self, input):
-    #Memory Usage
-    print("GPU MEM FREE: {} MB".format(utils.get_gpu_memory()))
     logits_aux = None
     s0 = s1 = self.stem(input)
     for i, cell in enumerate(self.cells):

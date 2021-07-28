@@ -103,7 +103,7 @@ def main():
   train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) # True means using colab
   train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
 
-  #Memory Usage
+  # GPU Memory Usage
   print("GPU MEM FREE: {} MB".format(utils.get_gpu_memory()))
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))

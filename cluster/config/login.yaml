@@ -36,6 +36,7 @@ spec:
         claimName: k5wang-volume-datasets
   nodeSelector:
     gpu-type: "1080Ti"
+    # gpu-type: "2080Ti"
 
 
 
