@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-job-search
+  name: k5wang-train-search-BC-50Epoch
   namespace: ecepxie
 spec:
   template:
@@ -17,13 +17,8 @@ spec:
       - name: research
         image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
         imagePullPolicy: Always
-        workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
-        command: ["/bin/bash", "-c"]
-        # args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save 50-LR_0.005 --is_parallel 1"]
-        args: ["python ../darts-LPT/train_search_ts.py --unrolled --batch_size 3 --epochs 25 --save 50-LR_0.005-FIXED_LOSS --is_parallel 1, --gpu 0,1"]
-        # command: ["bash","train.sh"]
-        # command: ["/bin/bash", "-c"]
-        # args: ["pwd && ls; bash train.sh"]
+        workingDir: /local
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/train_search.sh"]
         resources:
           requests:
             memory: "16Gi"
@@ -55,4 +50,4 @@ spec:
               - key: gpu-type
                 operator: In # Use NotIn for other types
                 values:
-                - 2080Ti
+                - 1080Ti
