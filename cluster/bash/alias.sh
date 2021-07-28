@@ -13,3 +13,4 @@ alias chdir="cd k5wang-volume/Blood_cell_classification_kaggle/darts-LPT/"
 alias weight_path="/k5wang-volume/Blood_cell_classification_kaggle/cluster/eval-EXP-CIFAR-25EPOCHS"
 alias test="python test_colab.py --model_path ../cluster/eval-EXP-CIFAR-25EPOCHS/weights.pt"
 #/k5wang-volume/Blood_cell_classification_kaggle/cluster
+#/k5wang-volume/Blood_cell_classification_kaggle/darts-LPT/search-GPU1080-20210725-084552#

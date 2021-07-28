@@ -150,8 +150,6 @@ class NetworkCIFAR(nn.Module):
     self.cells = nn.ModuleList()
     reduction_prev = False
     for i in range(layers):
-      #Memory Usage
-      print("GPU MEM FREE: {} MB".format(utils.get_gpu_memory()))
       if i in [layers//3, 2*layers//3]:
         C_curr *= 2
         reduction = True
