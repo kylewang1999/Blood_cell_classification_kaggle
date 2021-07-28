@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-train-search-BC-50Epoch
+  name: k5wang-train-search-bc-50epoch
   namespace: ecepxie
 spec:
   template:
