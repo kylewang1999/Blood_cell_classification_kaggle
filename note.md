@@ -75,3 +75,5 @@
         ---> Solve this by storing resized images separately before training, instead of resizing as the model retrives the image
 
 14. GPU Memory Issue: Can only support batchsize 5
+15. Why different trainig session have vastly different convergence behavior? -- [Training Randomness](https://towardsdatascience.com/how-to-solve-randomness-in-an-artificial-neural-network-3befc4f27d45
+)
