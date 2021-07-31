@@ -24,11 +24,11 @@ spec:
         
         resources:
           requests:
-            memory: "16Gi"
+            memory: "3Gi"
             cpu: "2"
             nvidia.com/gpu: 1
           limits:
-            memory: "16Gi"
+            memory: "3Gi"
             cpu: "2"
             nvidia.com/gpu: 1
 

@@ -4,6 +4,7 @@ from operations import *
 from torch.autograd import Variable
 from utils import drop_path
 import utils
+import logging
 
 
 class Cell(nn.Module):
