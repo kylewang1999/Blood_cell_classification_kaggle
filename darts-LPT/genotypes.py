@@ -13,7 +13,7 @@ PRIMITIVES = [
     'dil_conv_5x5'
 ]
 
-DARTS_TS_BC_25EPOCH = Genotype(
+DARTS_TS_BC_50EPOCH = Genotype(
         normal=[('sep_conv_5x5', 1), 
         ('sep_conv_3x3', 0), ('sep_conv_3x3', 2), 
         ('sep_conv_5x5', 1), ('sep_conv_5x5', 3), 
