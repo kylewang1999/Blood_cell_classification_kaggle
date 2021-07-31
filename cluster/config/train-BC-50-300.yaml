@@ -20,7 +20,7 @@ spec:
         workingDir: /local
         # workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
         
-        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/train.sh"]
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/train-BC-50-300.sh"]
         
         resources:
           requests:
