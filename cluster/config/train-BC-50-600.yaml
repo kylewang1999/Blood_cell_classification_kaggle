@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-train-cf10-300  # 50 search epochs / 300 train epochs
+  name: k5wang-train-50-600  # 50 search epochs / 300 train epochs
   namespace: ecepxie
 spec:
   template:
@@ -20,19 +20,17 @@ spec:
         workingDir: /local
         # workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
         
-        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/train-CF10-300.sh"]
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/train-BC-50-600.sh"]
         
         resources:
           requests:
             memory: "3Gi"
             cpu: "2"
             nvidia.com/gpu: 1
-            ephemeral-storage: 10Gi
           limits:
             memory: "3Gi"
             cpu: "2"
             nvidia.com/gpu: 1
-            ephemeral-storage: 10Gi
 
         volumeMounts:
         - name: local
@@ -51,6 +49,14 @@ spec:
         - name: k5wang-volume-datasets
           persistentVolumeClaim:
             claimName: k5wang-volume-datasets
-      nodeSelector:
-        gpu-type: "1080Ti"
-        nautilus.io/disktype: nvme
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: gpu-type
+                operator: In # Use NotIn for other types
+                values: 
+                  # - 1080Ti
+                  - 2080Ti
+
