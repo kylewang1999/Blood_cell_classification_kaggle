@@ -32,13 +32,7 @@ class Custom_Dataset(Dataset):
     
     def __getitem__(self, idx): # Get transformed images
         image = self.features[idx]
-        # image = cv2.imread(image)
-        # image = cv2.resize(image, (128,128)).astype(float)
-        # image = self.transform(image=np.array(image))['image']
-        # image = np.transpose(image, (2, 0, 1)).astype(np.float) 
         image = Image.open(image)  # Already resized to 128*128
-        # image = image.resize((128,128))
-        # print("Image dimension after resizing: {}".format(image.size))
         image = self.transform(image)
         return {
             # 'image': torch.tensor(image, dtype=torch.float),
@@ -79,6 +73,7 @@ def parse_dataset(dataset_path):
     Train_JPG_Labels = list(map(get_category_id,Train_JPG_Path))   
     Test_JPG_Labels = list(map(get_category_id,Test_JPG_Path))
     Validation_JPG_Labels = list(map(get_category_id,Validation_JPG_Path))
+    print("Total Number of Entries: {}".format(len(Train_JPG_Labels)+len(Test_JPG_Labels)+len(Validation_JPG_Labels)))
     print("Class Counts - Train | Test | Validation")
     print("EOSINOPHIL:   {} | {} | {}".format(Train_JPG_Labels.count(0), Test_JPG_Labels.count(0), Validation_JPG_Labels.count(0)))
     print("LYMPHOCYTE:   {} | {} | {}".format(Train_JPG_Labels.count(1), Test_JPG_Labels.count(1), Validation_JPG_Labels.count(1)))
@@ -210,7 +205,7 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
             shuffle = False,
             num_workers = 4)
 
-        print("x_train: {} | x_valid: {} ".format(
+        print("x_train: {} | x_test/valid: {} ".format(
             len(x_train), len(x_valid)))
         print("train_q: {} | valid_q: {} ".format(
             len(train_queue), len(valid_queue)))

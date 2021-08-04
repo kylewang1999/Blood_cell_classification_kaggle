@@ -46,5 +46,5 @@ python test.py --model_path ./eval-Blood_cell-50Epoch-WAUX-LR0.005/weights.pt --
  
 # BC-25-300
 # cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT/
-# python test.py --model_path ./eval-BC-50-300-20210731-025530/weights.pt --arch DARTS_TS_BC_25EPOCH --batch_size 8 --layers 12
+# python test.py --model_path ./eval-BC-25-300-20210731-025530/weights.pt --arch DARTS_TS_BC_25EPOCH --batch_size 8 --layers 12
     
