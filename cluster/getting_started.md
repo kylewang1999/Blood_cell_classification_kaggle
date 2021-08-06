@@ -289,6 +289,10 @@ Executing a job will likely create multiple pods with non-human-friendly suffixe
   ```bash
   du -hs
   ```
+**Check # of Files in a Dir**
+  ```bash
+  ls | wc -l
+  ```
 
 ## VI. Train / Test Command
 **Composing LPT with DARTS:**
