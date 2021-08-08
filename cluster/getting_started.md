@@ -94,7 +94,7 @@ kubectl cp ${LOCAL-DIR} ${NAMESPACE-NAME}/${POD_NAME}:${REMOTE-DIR}
 ```
 For this blood cell classification project:
 ```
-kubectl cp kaggle ecepxie/k5wang-login:k5wang-volume/Blood_cell_classification_kaggle
+kubectl cp kaggle ecepxie/k5wang-login:/k5wang-volume/Blood_cell_classification_kaggle
 ```
 
 2. Git (suggested for code transfer). You can git push your code on the repo and pull them on the cluster. This method can additionally maintain history of your code, and increase efficiency if collaboration is needed.
