@@ -11,11 +11,11 @@ spec:
     resources:
       requests:
         memory: "12Gi"
-        cpu: "2"
+        cpu: "1"
         nvidia.com/gpu: "1"
       limits:
         memory: "12Gi"
-        cpu: "2"
+        cpu: "1"
         nvidia.com/gpu: "1"
     volumeMounts:
     - name: local
