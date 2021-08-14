@@ -16,6 +16,7 @@ import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 from model_search import Network
 from architect import Architect
+import custom_dataset
 
 
 parser = argparse.ArgumentParser("cifar")
@@ -54,7 +55,8 @@ fh.setFormatter(logging.Formatter(log_format))
 logging.getLogger().addHandler(fh)
 
 
-CIFAR_CLASSES = 10
+# CIFAR_CLASSES = 10
+NUM_CLASSES = 4
 
 
 def main():
@@ -73,7 +75,8 @@ def main():
 
   criterion = nn.CrossEntropyLoss()
   criterion = criterion.cuda()
-  model = Network(args.init_channels, CIFAR_CLASSES, args.layers, criterion)
+  # model = Network(args.init_channels, CIFAR_CLASSES, args.layers, criterion)
+  model = Network(args.init_channels, NUM_CLASSES, args.layers, criterion)
   model = model.cuda()
   logging.info("param size = %fMB", utils.count_parameters_in_MB(model))
 
@@ -83,23 +86,29 @@ def main():
       momentum=args.momentum,
       weight_decay=args.weight_decay)
 
-  train_transform, valid_transform = utils._data_transforms_cifar10(args)
-  train_data = dset.CIFAR10(root=args.data, train=True, download=True, transform=train_transform)
+  
+  # train_transform, valid_transform = utils._data_transforms_cifar10(args)
+  # train_data = dset.CIFAR10(root=args.data, train=True, download=True, transform=train_transform)
 
-  num_train = len(train_data)
-  indices = list(range(num_train))
-  split = int(np.floor(args.train_portion * num_train))
+  # num_train = len(train_data)
+  # indices = list(range(num_train))
+  # split = int(np.floor(args.train_portion * num_train))
 
-  train_queue = torch.utils.data.DataLoader(
-      train_data, batch_size=args.batch_size,
-      sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
-      pin_memory=True, num_workers=2)
+  # train_queue = torch.utils.data.DataLoader(
+  #     train_data, batch_size=args.batch_size,
+  #     sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
+  #     pin_memory=True, num_workers=2)
 
-  valid_queue = torch.utils.data.DataLoader(
-      train_data, batch_size=args.batch_size,
-      sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:num_train]),
-      pin_memory=True, num_workers=2)
+  # valid_queue = torch.utils.data.DataLoader(
+  #     train_data, batch_size=args.batch_size,
+  #     sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:num_train]),
+  #     pin_memory=True, num_workers=2)
 
+  dataset_path = '/local/kaggle/blood_cell/'
+  train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
+  train_queue, valid_queue, _ = custom_dataset.preprocess_data(
+    train_data, _, args.batch_size, train_search=True)
+  
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, float(args.epochs), eta_min=args.learning_rate_min)
 
@@ -132,12 +141,21 @@ def train(train_queue, valid_queue, model, architect, criterion, optimizer, lr):
   top1 = utils.AvgrageMeter()
   top5 = utils.AvgrageMeter()
 
-  for step, (input, target) in enumerate(train_queue):
-    model.train()
-    n = input.size(0)
+  # for step, (input, target) in enumerate(train_queue):
+      # model.train()
+      # n = input.size(0)
+      # input = Variable(input, requires_grad=False).cuda()
+      # target = Variable(target, requires_grad=False).cuda(async=True)
 
-    input = Variable(input, requires_grad=False).cuda()
-    target = Variable(target, requires_grad=False).cuda(async=True)
+  for step, data in enumerate(train_queue):
+    input = data['image']
+    target = data['label']
+    input = input.to("cuda", dtype=torch.float)
+    target = target.to("cuda", dtype=torch.long)
+    model.train()
+    n = input.size(0) 
+
+
 
     # get a random minibatch from the search queue with replacement
     input_search, target_search = next(iter(valid_queue))
@@ -155,9 +173,12 @@ def train(train_queue, valid_queue, model, architect, criterion, optimizer, lr):
     optimizer.step()
 
     prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
-    objs.update(loss.data[0], n)
-    top1.update(prec1.data[0], n)
-    top5.update(prec5.data[0], n)
+    # objs.update(loss.data[0], n)
+    # top1.update(prec1.data[0], n)
+    # top5.update(prec5.data[0], n)
+    objs.update(loss.item(), n)
+    top1.update(prec1.item(), n)
+    top5.update(prec5.item(), n)
 
     if step % args.report_freq == 0:
       logging.info('train %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
@@ -171,12 +192,18 @@ def infer(valid_queue, model, criterion):
   top5 = utils.AvgrageMeter()
   model.eval()
 
-  for step, (input, target) in enumerate(valid_queue):
-    input = Variable(input, volatile=True).cuda()
-    target = Variable(target, volatile=True).cuda(async=True)
+  # for step, (input, target) in enumerate(valid_queue):
+  #   input = Variable(input, volatile=True).cuda()
+  #   target = Variable(target, volatile=True).cuda(async=True)
+  for step, data in enumerate(valid_queue):
+    input = data['image']
+    target = data['label']
+    input = input.to("cuda", dtype=torch.float)
+    target = target.to("cuda", dtype=torch.long) 
 
     logits = model(input)
-    loss = criterion(logits, target)
+    # loss = criterion(logits, target)
+    loss = criterion(logits + 1e-12, target)
 
     prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
     n = input.size(0)
