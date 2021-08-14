@@ -10,5 +10,7 @@ echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
 python train_search.py --batch_size 3 --epochs 50 --save official-BC-50Epoch --learning_rate 0.005
 
-python train_search.py --batch_size 3 --epochs 50 --save FOO --learning_rate 0.005 dataset_path ../kaggle/blood_cell/
+
+
+
 

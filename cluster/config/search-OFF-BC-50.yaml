@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-search-official-bc-50epoch
+  name: k5wang-search-off-bc-50
   namespace: ecepxie
 spec:
   template:
@@ -18,14 +18,14 @@ spec:
         image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
         imagePullPolicy: Always
         workingDir: /local
-        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/search.sh"]
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/search_official.sh"]
         resources:
           requests:
-            memory: "16Gi"
+            memory: "8Gi"
             cpu: "2"
             nvidia.com/gpu: 1
           limits:
-            memory: "16Gi"
+            memory: "8Gi"
             cpu: "2"
             nvidia.com/gpu: 1
 
@@ -34,6 +34,8 @@ spec:
           mountPath: /k5wang-volume
         - name: k5wang-volume-datasets
           mountPath: /k5wang-volume-datasets
+        - name: local
+          mountPath: /local
     
       volumes:
         - name: k5wang-volume
@@ -42,12 +44,19 @@ spec:
         - name: k5wang-volume-datasets
           persistentVolumeClaim:
             claimName: k5wang-volume-datasets
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: gpu-type
-                operator: In # Use NotIn for other types
-                values:
-                - TITANRTX
+        - name: local
+          emptyDir: {}
+      
+      nodeSelector:
+        gpu-type: "2080Ti"
+        nautilus.io/disktype: nvme   
+
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: gpu-type
+      #           operator: In # Use NotIn for other types
+      #           values:
+      #           - TITANRTX
