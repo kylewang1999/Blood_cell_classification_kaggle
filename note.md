@@ -78,6 +78,8 @@
     > The image of blood_cell(BC) dataset is 128 * 128, much larger than CIFAR image size 32 * 32. So the network for BC dataset cannot support the batchsize and layers configuration for CIFAR images
 
     > batch_size = 8, layers = 12 seem to work.
-    
+
 15. Why different trainig session have vastly different convergence behavior? -- [Training Randomness](https://towardsdatascience.com/how-to-solve-randomness-in-an-artificial-neural-network-3befc4f27d45
 )
+
+16. 
