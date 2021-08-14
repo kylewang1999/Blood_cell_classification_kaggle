@@ -42,7 +42,8 @@ parser.add_argument('--train_portion', type=float, default=0.5, help='portion of
 parser.add_argument('--unrolled', action='store_true', default=False, help='use one-step unrolled validation loss')
 parser.add_argument('--arch_learning_rate', type=float, default=3e-4, help='learning rate for arch encoding')
 parser.add_argument('--arch_weight_decay', type=float, default=1e-3, help='weight decay for arch encoding')
-parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
+# parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
+parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
 args = parser.parse_args()
 
 args.save = 'search-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
