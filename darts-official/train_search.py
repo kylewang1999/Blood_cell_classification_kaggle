@@ -210,7 +210,7 @@ def infer(valid_queue, model, criterion):
     # loss = criterion(logits, target)
     loss = criterion(logits + 1e-12, target)
 
-    prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+    prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
     n = input.size(0)
     objs.update(loss.data[0], n)
     top1.update(prec1.data[0], n)
