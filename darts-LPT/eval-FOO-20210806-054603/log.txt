@@ -1,0 +1,4 @@
+2021-08-06 05:46:03,686 gpu device = 0
+2021-08-06 05:46:03,686 args = Namespace(arch='DARTS_TS_BC_50EPOCH', auxiliary=True, auxiliary_weight=0.4, batch_size=8, cutout=False, cutout_length=16, data='../data', dataset_path='../kaggle/blood_cell/', drop_path_prob=0.2, epochs=300, gpu=0, grad_clip=5, init_channels=36, is_cifar100=0, layers=12, learning_rate=0.005, model_path='saved_models', momentum=0.9, report_freq=50, resume='', save='eval-FOO-20210806-054603', seed=0, weight_decay=0.0003)
+2021-08-06 05:46:06,712 param size = 2.437384MB
+2021-08-06 05:46:06,890 epoch 0 lr 5.000000e-03
