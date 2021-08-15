@@ -201,27 +201,28 @@ def infer(valid_queue, model, criterion):
   # for step, (input, target) in enumerate(valid_queue):
   #   input = Variable(input, volatile=True).cuda()
   #   target = Variable(target, volatile=True).cuda(async=True)
-  for step, data in enumerate(valid_queue):
-    input = data['image']
-    target = data['label']
-    input = input.to("cuda", dtype=torch.float)
-    target = target.to("cuda", dtype=torch.long) 
+  with torch.no_grad():
+    for step, data in enumerate(valid_queue):
+      input = data['image']
+      target = data['label']
+      input = input.to("cuda", dtype=torch.float)
+      target = target.to("cuda", dtype=torch.long) 
 
-    logits = model(input)
-    # loss = criterion(logits, target)
-    loss = criterion(logits + 1e-12, target)
+      logits = model(input)
+      # loss = criterion(logits, target)
+      loss = criterion(logits + 1e-12, target)
 
-    prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
-    n = input.size(0)
-    # objs.update(loss.data[0], n)
-    # top1.update(prec1.data[0], n)
-    # top5.update(prec5.data[0], n)
-    objs.update(loss.item(), n)
-    top1.update(prec1.item(), n)
-    top5.update(prec5.item(), n)
+      prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
+      n = input.size(0)
+      # objs.update(loss.data[0], n)
+      # top1.update(prec1.data[0], n)
+      # top5.update(prec5.data[0], n)
+      objs.update(loss.item(), n)
+      top1.update(prec1.item(), n)
+      top5.update(prec5.item(), n)
 
-    if step % args.report_freq == 0:
-      logging.info('valid %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
+      if step % args.report_freq == 0:
+        logging.info('valid %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
 
   return top1.avg, objs.avg
 
