@@ -109,6 +109,7 @@ def main():
   train_data, _, _ = custom_dataset.parse_dataset(args.dataset_path) 
   train_queue, valid_queue, _ = custom_dataset.preprocess_data(
     train_data, _, args.batch_size, train_search=True)
+  torch.cuda.empty_cache()  # Clear GPU Memory
   
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, float(args.epochs), eta_min=args.learning_rate_min)
