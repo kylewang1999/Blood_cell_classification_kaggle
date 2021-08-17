@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-search-off-bc-50-2
+  name: k5wang-search-off-bc-50
   namespace: ecepxie
 spec:
   template:
@@ -49,7 +49,7 @@ spec:
       
       nodeSelector:
         # gpu-type: "2080Ti"
-        gpu-type: "TITANRTX"
+        gpu-type: "2080Ti"
         nautilus.io/disktype: nvme   
 
       # affinity:
