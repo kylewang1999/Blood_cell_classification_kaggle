@@ -18,6 +18,7 @@ from genotypes import PRIMITIVES
 from genotypes import Genotype
 from teacher import *
 from teacher_update import *
+import custom_dataset
 
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--workers', type=int, default=2,
@@ -59,12 +60,16 @@ parser.add_argument('--tmp_data_dir', type=str,
                     default='/tmp/cache/', help='temp data dir')
 parser.add_argument('--note', type=str, default='try',
                     help='note for this run')
+# parser.add_argument('--dropout_rate', action='append',
+#                     default=[], help='dropout rate of skip connect')
 parser.add_argument('--dropout_rate', action='append',
-                    default=[], help='dropout rate of skip connect')
+                    default=['0.1', '0.4', '0.7'], help='dropout rate of skip connect')
 parser.add_argument('--add_width', action='append',
                     default=['0'], help='add channels')
+# parser.add_argument('--add_layers', action='append',
+#                     default=['0'], help='add layers')
 parser.add_argument('--add_layers', action='append',
-                    default=['0'], help='add layers')
+                    default=['6', '12'], help='add layers')
 parser.add_argument('--cifar100', action='store_true',
                     default=False, help='search with cifar100 dataset')
 
@@ -80,6 +85,9 @@ parser.add_argument('--weight_decay_h', type=float, default=3e-4)
 parser.add_argument('--is_parallel', type=int, default=0)
 parser.add_argument('--teacher_arch', type=str, default='18')
 parser.add_argument('--is_cifar100', type=int, default=0)
+# parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
+parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
+
 args = parser.parse_args()
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
@@ -95,12 +103,14 @@ fh = logging.FileHandler(os.path.join(args.save, 'log.txt'))
 fh.setFormatter(logging.Formatter(log_format))
 logging.getLogger().addHandler(fh)
 
-if args.cifar100:
-    CIFAR_CLASSES = 100
-    data_folder = '../data'
-else:
-    CIFAR_CLASSES = 10
-    data_folder = '../data'
+# if args.cifar100:
+#     CIFAR_CLASSES = 100
+#     data_folder = '../data'
+# else:
+#     CIFAR_CLASSES = 10
+#     data_folder = '../data'
+
+NUM_CLASSES = 4
 
 
 def main():
@@ -113,53 +123,63 @@ def main():
     cudnn.enabled = True
     torch.cuda.manual_seed(args.seed)
     logging.info("args = %s", args)
+
     #  prepare dataset
-    if args.cifar100:
-        train_transform, valid_transform = utils._data_transforms_cifar100(
-            args)
-    else:
-        train_transform, valid_transform = utils._data_transforms_cifar10(args)
-    if args.cifar100:
-        train_data = dset.CIFAR100(
-            root=args.tmp_data_dir, train=True, download=True, transform=train_transform)
-    else:
-        train_data = dset.CIFAR10(
-            root=args.tmp_data_dir, train=True, download=True, transform=train_transform)
+    # if args.cifar100:
+    #     train_transform, valid_transform = utils._data_transforms_cifar100(
+    #         args)
+    # else:
+    #     train_transform, valid_transform = utils._data_transforms_cifar10(args)
+    # if args.cifar100:
+    #     train_data = dset.CIFAR100(
+    #         root=args.tmp_data_dir, train=True, download=True, transform=train_transform)
+    # else:
+    #     train_data = dset.CIFAR10(
+    #         root=args.tmp_data_dir, train=True, download=True, transform=train_transform)
+    
     if args.teacher_arch == '18':
         teacher_w = resnet18().cuda()
     elif args.teacher_arch == '50':
         teacher_w = resnet50().cuda()
     elif args.teacher_arch == '101':
         teacher_w = resnet101().cuda()
-    if args.cifar100:
-        teacher_h = nn.Linear(
-            512 * teacher_w.block.expansion, CIFAR100_CLASSES).cuda()
-    else:
-        teacher_h = nn.Linear(
-            512 * teacher_w.block.expansion, CIFAR_CLASSES).cuda()
+
+    # if args.cifar100:
+    #     teacher_h = nn.Linear(
+    #         512 * teacher_w.block.expansion, CIFAR100_CLASSES).cuda()
+    # else:
+    #     teacher_h = nn.Linear(
+    #         512 * teacher_w.block.expansion, CIFAR_CLASSES).cuda()
+    teacher_h = nn.Linear(512 * teacher_w.block.expansion, NUM_CLASSES).cuda()
     teacher_v = nn.Linear(512 * teacher_w.block.expansion, 2).cuda()
 
-    num_train = len(train_data)
-    indices = list(range(num_train))
-    split = int(np.floor(args.train_portion * num_train))
+    # num_train = len(train_data)
+    # indices = list(range(num_train))
+    # split = int(np.floor(args.train_portion * num_train))
 
-    train_queue = torch.utils.data.DataLoader(
-        train_data, batch_size=args.batch_size,
-        sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
-        pin_memory=True, num_workers=args.workers)
+    # train_queue = torch.utils.data.DataLoader(
+    #     train_data, batch_size=args.batch_size,
+    #     sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
+    #     pin_memory=True, num_workers=args.workers)
 
-    valid_queue = torch.utils.data.DataLoader(
-        train_data, batch_size=args.batch_size,
-        sampler=torch.utils.data.sampler.SubsetRandomSampler(
-            indices[split:num_train]),
-        pin_memory=True, num_workers=args.workers)
-    # the dataset for data selection. can be imagenet or so.
-    external_queue = torch.utils.data.DataLoader(
-        train_data, batch_size=args.batch_size,
-        sampler=torch.utils.data.sampler.SubsetRandomSampler(
-            indices[split:num_train]),
-        pin_memory=False, num_workers=4)
+    # valid_queue = torch.utils.data.DataLoader(
+    #     train_data, batch_size=args.batch_size,
+    #     sampler=torch.utils.data.sampler.SubsetRandomSampler(
+    #         indices[split:num_train]),
+    #     pin_memory=True, num_workers=args.workers)
+    # # the dataset for data selection. can be imagenet or so.
+    # external_queue = torch.utils.data.DataLoader(
+    #     train_data, batch_size=args.batch_size,
+    #     sampler=torch.utils.data.sampler.SubsetRandomSampler(
+    #         indices[split:num_train]),
+    #     pin_memory=False, num_workers=4)
 
+    dataset_path = args.dataset_path
+    train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
+    train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
+        train_data, _, args.batch_size, train_search=True)
+    torch.cuda.empty_cache()  # Clear GPU Memory
+    
     # build Network
     criterion = nn.CrossEntropyLoss()
     criterion = criterion.cuda()
@@ -185,7 +205,9 @@ def main():
         drop_rate = [0.0, 0.0, 0.0]
     eps_no_archs = [10, 10, 10]
     for sp in range(len(num_to_keep)):
-        model = Network(args.init_channels + int(add_width[sp]), CIFAR_CLASSES, args.layers + int(
+        # model = Network(args.init_channels + int(add_width[sp]), CIFAR_CLASSES, args.layers + int(
+        #     add_layers[sp]), criterion, switches_normal=switches_normal, switches_reduce=switches_reduce, p=float(drop_rate[sp]))
+        model = Network(args.init_channels + int(add_width[sp]), NUM_CLASSES, args.layers + int(
             add_layers[sp]), criterion, switches_normal=switches_normal, switches_reduce=switches_reduce, p=float(drop_rate[sp]))
         model = nn.DataParallel(model)
         model = model.cuda()
@@ -413,11 +435,20 @@ def train(train_queue,
     top1 = utils.AvgrageMeter()
     top5 = utils.AvgrageMeter()
 
-    for step, (input, target) in enumerate(train_queue):
+    # for step, (input, target) in enumerate(train_queue):
+    #     model.train()
+    #     n = input.size(0)
+    #     input = input.cuda()
+    #     target = target.cuda(non_blocking=True)
+
+    for step, data in enumerate(train_queue):
+        input = data['image']
+        target = data['label']
+        input = input.to("cuda", dtype=torch.float)
+        target = target.to("cuda", dtype=torch.long)
         model.train()
-        n = input.size(0)
-        input = input.cuda()
-        target = target.cuda(non_blocking=True)
+        n = input.size(0) 
+
         # external data.
         try:
             input_external, target_external = next(external_queue_iter)
@@ -484,7 +515,8 @@ def train(train_queue,
         optimizer_h.zero_grad()
 
         teacher_logits = model_h(model_w(input))
-        left_loss = criterion(teacher_logits, target)
+        # left_loss = criterion(teacher_logits, target)
+        left_loss = criterion(teacher_logits + 1e-12, target)
 
         teacher_features = model_w(input_external)
         teacher_logits_external = model_h(teacher_features)
@@ -502,7 +534,8 @@ def train(train_queue,
         optimizer_w.step()
         optimizer_h.step()
 
-        prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+        # prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+        prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
         objs.update(loss.data.item(), n)
         top1.update(prec1.data.item(), n)
         top5.update(prec5.data.item(), n)
@@ -521,14 +554,22 @@ def infer(valid_queue, model, criterion):
     model.eval()
 
     with torch.no_grad():
-        for step, (input, target) in enumerate(valid_queue):
-            input = input.cuda()
-            target = target.cuda(non_blocking=True)
+        # for step, (input, target) in enumerate(valid_queue):
+        #     input = input.cuda()
+        #     target = target.cuda(non_blocking=True)
+        for step, data in enumerate(valid_queue):
+            input = data['image']
+            target = data['label']
+            input = input.to("cuda", dtype=torch.float)
+            target = target.to("cuda", dtype=torch.long) 
+
             with torch.no_grad():
                 logits = model(input)
-                loss = criterion(logits, target)
+                # loss = criterion(logits, target)
+                loss = criterion(logits + 1e-12, target)
 
-            prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+            # prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+            prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
             n = input.size(0)
             objs.update(loss.data.item(), n)
             top1.update(prec1.data.item(), n)

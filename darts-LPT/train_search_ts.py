@@ -335,7 +335,7 @@ def train(train_queue, valid_queue, external_queue,
     optimizer.zero_grad()
     logits = model(input)
     # loss = criterion(logits, target)
-    loss = criterion(logits + 1e-12, target)
+    loss = criterion(logits + 1e-12, target)  # Add a small constant to avoid zero logits
 
     loss.backward()
     nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
