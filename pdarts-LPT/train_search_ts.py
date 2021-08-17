@@ -92,7 +92,7 @@ args = parser.parse_args()
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
 
-args.save = '{}search-{}-{}'.format(args.save,
+args.save = '{}-search-{}-{}'.format(args.save,
                                     args.note, time.strftime("%Y%m%d-%H%M%S"))
 utils.create_exp_dir(args.save, scripts_to_save=glob.glob('*.py'))
 
@@ -451,22 +451,33 @@ def train(train_queue,
 
         # external data.
         try:
-            input_external, target_external = next(external_queue_iter)
+            # input_external, target_external = next(external_queue_iter)
+            data_external = next(external_queue_iter)
         except:
             external_queue_iter = iter(external_queue)
-            input_external, target_external = next(external_queue_iter)
-        input_external = input_external.cuda()
-        target_external = target_external.cuda(non_blocking=True)
+            # input_external, target_external = next(external_queue_iter)
+            data_external = next(external_queue_iter)
+
+        # input_external = input_external.cuda()
+        # target_external = target_external.cuda(non_blocking=True)
+        input_external = data_external['image'].to("cuda", dtype=torch.float)
+        target_external = data_external['label'].to("cuda", dtype=torch.long) 
+
         if train_arch:
             # In the original implementation of DARTS, it is input_search, target_search = next(iter(valid_queue), which slows down
             # the training when using PyTorch 0.4 and above.
             try:
-                input_search, target_search = next(valid_queue_iter)
+                # input_search, target_search = next(valid_queue_iter)
+                data_search = next(valid_queue_iter)
             except:
                 valid_queue_iter = iter(valid_queue)
-                input_search, target_search = next(valid_queue_iter)
-            input_search = input_search.cuda()
-            target_search = target_search.cuda(non_blocking=True)
+                # input_search, target_search = next(valid_queue_iter)
+                data_search = next(valid_queue_iter)
+            
+            # input_search = input_search.cuda()
+            # target_search = target_search.cuda(non_blocking=True)
+            input_search = data_search['image'].to("cuda", dtype=torch.float)
+            target_search = data_search['label'].to("cuda", dtype=torch.long) 
 
             optimizer_a.zero_grad()
             # logits = model(input_search)
