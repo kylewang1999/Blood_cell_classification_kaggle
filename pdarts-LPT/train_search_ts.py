@@ -92,7 +92,7 @@ args = parser.parse_args()
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
 
-args.save = '{}-search-{}-{}'.format(args.save,
+args.save = '{}search-{}-{}'.format(args.save,
                                     args.note, time.strftime("%Y%m%d-%H%M%S"))
 utils.create_exp_dir(args.save, scripts_to_save=glob.glob('*.py'))
 
