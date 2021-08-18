@@ -117,6 +117,16 @@ python test.py --model_path ./eval-Blood_cell-50Epoch-WAUX-LR0.005/weights.pt --
     # 08/04 05:35:59 AM test 300 2.233470e+00 54.485050 70.639535
     # 08/04 05:36:11 AM test_acc 54.242059
 
-python test.py --model_path ./eval-BC-50-300-20210808-070655/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+# python test.py --model_path ./eval-BC-50-300-20210808-070655/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
 
-python test.py --model_path ./eval-BC-50-600-20210805-011738/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+# Official Darts 50 Epoch Search
+# python test.py --model_path ./eval-OFF-BC-50-300-20210818-014314/weights.pt --arch DARTS_BC_50EPOCH --batch_size 8 --layers 12 
+    # 6 Epoch
+    # 08/18 02:42:19 AM test 000 1.443738e-02 100.000000 100.000000
+    # 08/18 02:42:28 AM test 050 6.464644e-01 84.558824 96.813725
+    # 08/18 02:42:37 AM test 100 5.963897e-01 86.633663 97.029703
+    # 08/18 02:42:46 AM test 150 6.092122e-01 87.251656 96.274834
+    # 08/18 02:42:55 AM test 200 6.015650e-01 87.189055 96.268657
+    # 08/18 02:43:04 AM test 250 6.589103e-01 86.005976 96.015936
+    # 08/18 02:43:13 AM test 300 6.511863e-01 86.046512 96.096346
+    # 08/18 02:43:15 AM test_acc 86.288701
