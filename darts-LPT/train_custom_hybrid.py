@@ -1,4 +1,5 @@
 # Trains on the BCCD Dataset
+# Hybrid Model: CNN + Traditional ML Classifier
 import os
 import os.path
 import sys
@@ -17,7 +18,7 @@ import torch.backends.cudnn as cudnn
 from  pathlib import Path
 
 from torch.autograd import Variable
-from model import NetworkCIFAR as Network # Trains the network in model.py 
+from model import NetworkHybrid as Network # Trains the network in model.py 
 import custom_dataset
 # The best Cells acquired by NAS
 
