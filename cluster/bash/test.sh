@@ -130,3 +130,5 @@ python test.py --model_path ./eval-Blood_cell-50Epoch-WAUX-LR0.005/weights.pt --
     # 08/18 02:43:04 AM test 250 6.589103e-01 86.005976 96.015936
     # 08/18 02:43:13 AM test 300 6.511863e-01 86.046512 96.096346
     # 08/18 02:43:15 AM test_acc 86.288701
+
+
