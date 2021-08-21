@@ -43,7 +43,7 @@ class Custom_Dataset(Dataset):
 
 # Returns train/test/valid dataset as dataframes
 def parse_dataset(dataset_path):
-    # dataset_path = "./kaggle/dataset_improved/wbc_images_resized"
+    # dataset_path = "./kaggle/wbc_images_resized"
     Train_Data_Path = Path(dataset_path + "TRAIN")
     Test_Data_Path = Path(dataset_path + "TEST")
     Validation_Data_Path = Path(dataset_path + "TEST_SIMPLE")
