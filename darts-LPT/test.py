@@ -14,7 +14,8 @@ import torch.backends.cudnn as cudnn
 
 from torch.autograd import Variable
 from model import NetworkCIFAR as Network
-import custom_dataset
+# import custom_dataset
+import custom_dataset_improved 
 
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--data', type=str, default='../data', help='location of the data corpus')
@@ -30,7 +31,8 @@ parser.add_argument('--cutout_length', type=int, default=16, help='cutout length
 parser.add_argument('--drop_path_prob', type=float, default=0.2, help='drop path probability')
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='which architecture to use')
-parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
+# parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
+parser.add_argument('--dataset_path', type=str, default='../kaggle/dataset_improved/wbc_images_resized/', help='location of the data corpus')
 args = parser.parse_args()
 
 log_format = '%(asctime)s %(message)s'
@@ -74,8 +76,8 @@ def main():
   # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
   # dataset_path = "./kaggle/blood_cell/" # Path for local
   dataset_path = args.dataset_path
-  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path)
-  _, test_queue = custom_dataset.preprocess_data(train_data, test_data, args.batch_size)
+  train_data, test_data, valid_data = custom_dataset_improved.parse_dataset(dataset_path)
+  _, test_queue = custom_dataset_improved.preprocess_data(train_data, test_data, args.batch_size)
 
   model.drop_path_prob = args.drop_path_prob
   test_acc, test_obj = infer(test_queue, model, criterion)
@@ -103,9 +105,6 @@ def infer(test_queue, model, criterion):
 
       prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
       n = input.size(0)
-      # objs.update(loss.data[0], n)
-      # top1.update(prec1.data[0], n)
-      # top5.update(prec5.data[0], n)
       objs.update(loss.item(), n)
       top1.update(prec1.item(), n)
       top5.update(prec5.item(), n)
