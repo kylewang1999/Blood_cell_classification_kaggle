@@ -15,5 +15,4 @@ echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 python train_custom_hybrid.py --batch_size 8 --layers 12 --arch DARTS_TS_BC_50EPOCH --epochs 300 --save darts-hybrid-reorg --learning_rate 0.005 
 
 
-# python train_custom_hybrid.py --batch_size 8 --layers 12 --arch DARTS_TS_BC_50EPOCH --epochs 300 --save FOO --learning_rate 0.005 
-
+# python train_custom.py --batch_size 8 --layers 12 --arch DARTS_TS_BC_50EPOCH --epochs 300 --save FOO --learning_rate 0.005 --dataset_path ../kaggle/BCCD_Reorganized/ 
