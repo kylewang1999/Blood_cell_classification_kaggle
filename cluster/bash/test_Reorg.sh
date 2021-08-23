@@ -44,5 +44,6 @@ python test.py --model_path ./eval-Blood_cell-50Epoch-WAUX-LR0.005/weights.pt --
     # 300 Epoch (Improved Dataset)
     # 08/21 01:42:30 PM test_acc 88.299156
 
+# python test.py --model_path ./eval-darts-hybrid-reorg-20210823-122343/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
 
     
