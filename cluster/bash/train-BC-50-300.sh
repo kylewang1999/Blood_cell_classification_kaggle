@@ -2,8 +2,11 @@
 echo Start Copying
 SECONDS=0
 # cp -r /k5wang-volume/Blood_cell_classification_kaggle/kaggle/BCCD_Reorganized /local/kaggle/BCCD_Reorganized
+mkdir /local/kaggle
 cd /local/kaggle
 git clone https://github.com/kylewang1999/BCCD_Reorganized.git
+pwd
+ls
 
 cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
 pwd

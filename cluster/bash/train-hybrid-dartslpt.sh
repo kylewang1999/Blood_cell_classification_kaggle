@@ -2,6 +2,7 @@
 echo Start Copying
 SECONDS=0
 # cp -r /k5wang-volume/Blood_cell_classification_kaggle/kaggle /local/kaggle
+mkdir /local/kaggle
 cd /local/kaggle
 git clone https://github.com/kylewang1999/BCCD_Reorganized.git
 
