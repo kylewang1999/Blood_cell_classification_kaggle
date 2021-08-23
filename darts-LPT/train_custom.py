@@ -45,7 +45,6 @@ parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='wh
 parser.add_argument('--grad_clip', type=float, default=5, help='gradient clipping')
 parser.add_argument('--resume', type=str, default='')
 parser.add_argument('--is_cifar100', type=int, default=0)
-# parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
 parser.add_argument('--dataset_path', type=str, default='/local/kaggle/BCCD_Reorganized/', help='location of the data corpus')
 args = parser.parse_args()
 
