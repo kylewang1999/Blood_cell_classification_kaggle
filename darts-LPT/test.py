@@ -76,8 +76,8 @@ def main():
   # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
   # dataset_path = "./kaggle/blood_cell/" # Path for local
   dataset_path = args.dataset_path
-  train_data, test_data, valid_data = custom_dataset_improved.parse_dataset(dataset_path)
-  _, test_queue = custom_dataset_improved.preprocess_data(train_data, test_data, args.batch_size)
+  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path)
+  _, test_queue = custom_dataset.preprocess_data(train_data, test_data, args.batch_size)
 
   model.drop_path_prob = args.drop_path_prob
   test_acc, test_obj = infer(test_queue, model, criterion)
