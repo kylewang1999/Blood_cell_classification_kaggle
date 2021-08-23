@@ -44,21 +44,15 @@ class Custom_Dataset(Dataset):
 # Returns train/test/valid dataset as dataframes
 def parse_dataset(dataset_path):
     # Train/Test/Val Paths
-    if(dataset_path[0]!='.'):
-        # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"
-        Train_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TRAIN")
-        Test_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TEST")
-        Validation_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TEST_SIMPLE")
-    else:
-        # dataset_path = "./kaggle/blood_cell/"
-        Train_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TRAIN")
-        Test_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TEST")
-        Validation_Data_Path = Path(dataset_path + "dataset2-master/dataset2-master/images/TEST_SIMPLE")
-        # If working on local, get absolute paths
-        Train_Data_Path = Train_Data_Path.resolve()
-        Test_Data_Path = Test_Data_Path.resolve()
-        Validation_Data_Path = Validation_Data_Path.resolve()
-        print(Train_Data_Path)
+    # dataset_path = "./kaggle/blood_cell/"
+    Train_Data_Path = Path(dataset_path + "Train")
+    Test_Data_Path = Path(dataset_path + "Test")
+    Validation_Data_Path = Path(dataset_path + "Valid")
+    # If working on local, get absolute paths
+    Train_Data_Path = Train_Data_Path.resolve()
+    Test_Data_Path = Test_Data_Path.resolve()
+    Validation_Data_Path = Validation_Data_Path.resolve()
+    print(Train_Data_Path)
 
     # JPG Paths and Lables (Approx. 3000 imgs per type)
     Train_JPG_Path = list(Train_Data_Path.glob(r"**/*.jpeg"))
