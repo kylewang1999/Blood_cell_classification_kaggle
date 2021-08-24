@@ -1,4 +1,5 @@
 /kaggle
+./cluster/.vscode
 # /eval*
 # ./darts-LPT/eval*
 # ./cluster/eval*
