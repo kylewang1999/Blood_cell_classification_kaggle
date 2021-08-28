@@ -13,14 +13,6 @@ import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
 
-# from __future__ import print_function, division
-# import os
-# import torch
-# from skimage import io, transform
-# import numpy as np
-# import matplotlib.pyplot as plt
-
-
 class Custom_Dataset(Dataset):
     def __init__(self, images, targets, transform):
         self.features = images
@@ -44,10 +36,10 @@ class Custom_Dataset(Dataset):
 # Returns train/test/valid dataset as dataframes
 def parse_dataset(dataset_path):
     # Train/Test/Val Paths
-    # dataset_path = "./kaggle/blood_cell/"
+    # dataset_path = "../kaggle/blood_cell/"
     Train_Data_Path = Path(dataset_path + "Train")
     Test_Data_Path = Path(dataset_path + "Test")
-    Validation_Data_Path = Path(dataset_path + "Validation")
+    Validation_Data_Path = Path(dataset_path + "Valid")
     # If working on local, get absolute paths
     Train_Data_Path = Train_Data_Path.resolve()
     Test_Data_Path = Test_Data_Path.resolve()

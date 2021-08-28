@@ -19,7 +19,7 @@ from  pathlib import Path
 from torch.autograd import Variable
 from model import NetworkCIFAR as Network # Trains the network in model.py 
 import custom_dataset
-# The best Cells acquired by NAS
+
 
 
 parser = argparse.ArgumentParser("cifar")
@@ -98,10 +98,9 @@ def main():
       weight_decay=args.weight_decay
       )
 
-  # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
-  # dataset_path = "./kaggle/blood_cell/" # Path for local
+  # Load Dataset
   dataset_path = args.dataset_path
-  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) # True means using colab
+  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
   train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
