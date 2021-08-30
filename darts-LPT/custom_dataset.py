@@ -139,9 +139,14 @@ def create_transforms():
 def preprocess_data(train_df, valid_df, batch_size, train_search=False):
     train_transform, valid_transform = create_transforms()
 
-    x_train = train_df.JPG if train_df else None
-    y_train = train_df.CATEGORY if train_df else None
-    train_dataset = Custom_Dataset(x_train.values, y_train.values, train_transform) if train_df else None
+    if train_df is None:
+        x_train = train_df.JPG 
+        y_train = train_df.CATEGORY
+        train_dataset = Custom_Dataset(x_train.values, y_train.values, train_transform) 
+    else:
+        x_train = None
+        y_train = None
+        train_dataset = None
 
     if train_search:    # Portioning Dataset for train_search_ts.py
         train_portion = 0.5
@@ -174,17 +179,20 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
         y_valid = valid_df.CATEGORY
         valid_dataset = Custom_Dataset(x_valid.values, y_valid.values, valid_transform)
         
-        train_queue = DataLoader(
-            dataset = train_dataset, batch_size = batch_size,
-            shuffle = True,
-            num_workers = 4) if train_dataset else None
+        if train_dataset:
+            train_queue = DataLoader(
+                dataset = train_dataset, batch_size = batch_size,
+                shuffle = True,
+                num_workers = 4) 
+            print("x_train: {} | x_test/valid: {} ".format(
+                len(x_train), len(x_valid)))
+        else: 
+            train_queue = None
+        
         valid_queue = DataLoader(
             dataset = valid_dataset, batch_size = batch_size,
             shuffle = False,
             num_workers = 4)
-
-        print("x_train: {} | x_test/valid: {} ".format(
-            len(x_train), len(x_valid)))
         print("train_q: {} | valid_q: {} ".format(
             len(train_queue), len(valid_queue)))
         return train_queue, valid_queue
