@@ -106,8 +106,6 @@ def infer(test_queue, model, criterion):
 
     ### For Mendely PBC_dataset
     for step, (input, target) in enumerate(test_queue):
-      print(input)
-      print(target)
       input = input.to("cuda", dtype=torch.float)
       target = target.to("cuda", dtype=torch.long) 
 
