@@ -33,6 +33,6 @@ duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
 # python train_custom.py --batch_size 3 --arch DARTS_TS_BC_25EPOCH --epochs 300 --save BC-300Epoch --learning_rate 0.005
-python train_custom_tune.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt --epochs 100 --arch DARTS_TS_BC_50EPOCH --save tune-hybrid-BC-50-300
+python train_custom_tune.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt --epochs 100 --arch DARTS_TS_BC_50EPOCH --save tune-hybrid-BC-50-300 --local_mount 0
 
 
