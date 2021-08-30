@@ -60,7 +60,7 @@ logging.getLogger().addHandler(fh)
 
 # CIFAR_CLASSES = 10
 # CIFAR100_CLASSES = 100
-NUM_CLASSES = 4
+NUM_CLASSES = 8
 
 def save_checkpoint(state, checkpoint=args.save, filename='checkpoint.pth.tar'):
     filepath = os.path.join(checkpoint, filename)
@@ -109,7 +109,6 @@ def main():
 
   ### Load Dataset
   dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
-  print(len(dataloaders))
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
   start_epoch = 0
