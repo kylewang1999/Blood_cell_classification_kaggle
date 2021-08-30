@@ -33,7 +33,7 @@ parser.add_argument('--seed', type=int, default=0, help='random seed')
 parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='which architecture to use')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/BCCD_Reorganized/', help='location of the data corpus')
-parser.add_argument('--dataset_path', type=str, default='../kaggle/PBC_dataset/PBC_dataset/wbc/', help='location of the data corpus')
+parser.add_argument('--dataset_path', type=str, default='../kaggle/PBC_dataset/PBC_dataset/wbc_resized/', help='location of the data corpus')
 args = parser.parse_args()
 
 log_format = '%(asctime)s %(message)s'

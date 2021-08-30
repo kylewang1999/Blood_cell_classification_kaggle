@@ -139,7 +139,7 @@ def create_transforms():
 def preprocess_data(train_df, valid_df, batch_size, train_search=False):
     train_transform, valid_transform = create_transforms()
 
-    if train_df is None:
+    if train_df is not None:
         x_train = train_df.JPG 
         y_train = train_df.CATEGORY
         train_dataset = Custom_Dataset(x_train.values, y_train.values, train_transform) 
