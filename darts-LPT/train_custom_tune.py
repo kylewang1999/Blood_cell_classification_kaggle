@@ -45,7 +45,8 @@ parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='wh
 parser.add_argument('--grad_clip', type=float, default=5, help='gradient clipping')
 parser.add_argument('--resume', type=str, default='')
 parser.add_argument('--is_cifar100', type=int, default=0)
-parser.add_argument('--dataset_path', type=str, default='/local/kaggle/BCCD_Reorganized/', help='location of the data corpus')
+# parser.add_argument('--dataset_path', type=str, default='/local/kaggle/BCCD_Reorganized/', help='location of the data corpus')
+parser.add_argument('--local_mount', type=int, default=1, help='0 use /local on kubectl, 1 use mounted volume')
 args = parser.parse_args()
 
 args.save = 'eval-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
@@ -108,7 +109,10 @@ def main():
       )
 
   ### Load Dataset
-  dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
+  if args.local_mount:
+    dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
+  else:
+    dataloaders = loader.get_dataloaders(data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split',batch_size = args.batch_size, num_workers = 2)
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
   start_epoch = 0
