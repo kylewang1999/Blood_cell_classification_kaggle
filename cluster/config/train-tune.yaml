@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-train-25-300  # 50 search epochs / 300 train epochs
+  name: k5wang-eval-tune-50-300 # 50 search epochs / 300 train epochs
   namespace: ecepxie
 spec:
   template:
@@ -20,7 +20,7 @@ spec:
         workingDir: /local
         # workingDir: /k5wang-volume/Blood_cell_classification_kaggle/cluster  # dir in which code is executed
         
-        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/train-BC-25-300.sh"]
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/train-tune.sh"]
         
         resources:
           requests:
@@ -57,6 +57,8 @@ spec:
               - key: gpu-type
                 operator: In # Use NotIn for other types
                 values: 
-                  - 1080Ti
-                # - 2080Ti
+                  # - 1080Ti
+                  - 2080Ti
+                  # - TITANRTX
+
 

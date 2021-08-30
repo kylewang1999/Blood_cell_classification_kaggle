@@ -1,4 +1,4 @@
-# Trains on the BCCD Dataset
+# Trains model from scratch
 import os
 import os.path
 import sys
@@ -45,7 +45,8 @@ parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='wh
 parser.add_argument('--grad_clip', type=float, default=5, help='gradient clipping')
 parser.add_argument('--resume', type=str, default='')
 parser.add_argument('--is_cifar100', type=int, default=0)
-parser.add_argument('--dataset_path', type=str, default='/local/kaggle/BCCD_Reorganized/', help='location of the data corpus')
+# parser.add_argument('--dataset_path', type=str, default='/local/kaggle/BCCD_Reorganized/', help='location of the data corpus')
+parser.add_argument('--local_mount', type=int, default=1, help='0 use /local on kubectl, 1 use mounted volume')
 args = parser.parse_args()
 
 args.save = 'eval-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
@@ -99,9 +100,13 @@ def main():
       )
 
   # Load Dataset
-  dataset_path = args.dataset_path
-  train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
-  train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
+  # dataset_path = args.dataset_path
+  # train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
+  # train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
+  if args.local_mount:
+    dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
+  else:
+    dataloaders = loader.get_dataloaders(data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split',batch_size = args.batch_size, num_workers = 2)
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
   start_epoch = 0
@@ -116,11 +121,11 @@ def main():
     logging.info('epoch %d lr %e', epoch, scheduler.get_lr()[0])
     model.drop_path_prob = args.drop_path_prob * epoch / args.epochs
 
-    train_acc, train_obj = train(train_queue, model, criterion, optimizer)
+    train_acc, train_obj = train(dataloaders[0], model, criterion, optimizer)
     scheduler.step()
     logging.info('train_acc %f', train_acc)
 
-    valid_acc, valid_obj = infer(valid_queue, model, criterion)
+    valid_acc, valid_obj = infer(dataloaders[1], model, criterion)
     logging.info('valid_acc %f', valid_acc)
 
     utils.save(model, os.path.join(args.save, 'weights.pt'))
@@ -137,14 +142,14 @@ def train(train_queue, model, criterion, optimizer):
   top5 = utils.AvgrageMeter()
   model.train()
 
-  # for step, (input, target) in enumerate(train_queue):
-  #   input = input.cuda()
-  #   target = target.cuda(non_blocking=True)
-  for step, data in enumerate(train_queue):
-    input = data['image']
-    target = data['label']
+  for step, (input, target) in enumerate(train_queue):
     input = input.to("cuda", dtype=torch.float)
     target = target.to("cuda", dtype=torch.long) 
+  # for step, data in enumerate(train_queue):
+  #   input = data['image']
+  #   target = data['label']
+  #   input = input.to("cuda", dtype=torch.float)
+  #   target = target.to("cuda", dtype=torch.long) 
 
     optimizer.zero_grad()
     logits, logits_aux = model(input)
@@ -175,26 +180,26 @@ def infer(valid_queue, model, criterion):
   model.eval()
 
   with torch.no_grad():
-    # for step, (input, target) in enumerate(valid_queue):
-    #     input = input.cuda()
-    #     target = target.cuda(non_blocking=True)
-    for step, data in enumerate(valid_queue):
-        input = data['image']
-        target = data['label']
-        input = input.to("cuda", dtype=torch.float)
-        target = target.to("cuda", dtype=torch.long) 
+    for step, (input, target) in enumerate(valid_queue):
+      input = input.to("cuda", dtype=torch.float)
+      target = target.to("cuda", dtype=torch.long) 
+    # for step, data in enumerate(valid_queue):
+    #     input = data['image']
+    #     target = data['label']
+    #     input = input.to("cuda", dtype=torch.float)
+    #     target = target.to("cuda", dtype=torch.long) 
 
-        logits, _ = model(input)
-        loss = criterion(logits, target)
+      logits, _ = model(input)
+      loss = criterion(logits, target)
 
-        prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
-        n = input.size(0)
-        objs.update(loss.item(), n)
-        top1.update(prec1.item(), n)
-        top5.update(prec5.item(), n)
+      prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
+      n = input.size(0)
+      objs.update(loss.item(), n)
+      top1.update(prec1.item(), n)
+      top5.update(prec5.item(), n)
 
-        if step % args.report_freq == 0:
-          logging.info('valid %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
+      if step % args.report_freq == 0:
+        logging.info('valid %03d %e %f %f', step, objs.avg, top1.avg, top5.avg)
 
   return top1.avg, objs.avg
 
