@@ -29,7 +29,7 @@ def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_sp
         for split in splits:
             # Full Train/Test/Valid set containing all 8 types of PBC
             dataset = torchvision.datasets.ImageFolder(root=os.path.join(data_dir, split), transform=transform)
-            wbc_types = ['eosinophil', 'lymphocyte', 'monocyte', 'neutrophil']
+            wbc_types = ['0_eosinophil', '1_lymphocyte', '2_monocyte', '3_neutrophil']
             wbc_types_idx = [dataset.class_to_idx[t] for t in wbc_types] 
             print(wbc_types_idx)
             # Select only 4 types of WBC & Put them in appropriate subset
