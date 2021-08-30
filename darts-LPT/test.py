@@ -82,10 +82,10 @@ def main():
 
   ## For Loading Mendely PBC_dataset
   import mendely_dataloader as loader
-  _, _, test_queue = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
+  dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
   
   model.drop_path_prob = args.drop_path_prob
-  test_acc, test_obj = infer(test_queue, model, criterion)
+  test_acc, test_obj = infer(dataloaders[-1], model, criterion)
   logging.info('test_acc %f', test_acc)
 
 
@@ -95,13 +95,17 @@ def infer(test_queue, model, criterion):
   top5 = utils.AvgrageMeter()
   model.eval()
 
-  # for step, (input, target) in enumerate(test_queue):
-  #   input = input.to(device)
-  #   target = target.cuda(non_blocking=True)
   with torch.no_grad():
-    for step, data in enumerate(test_queue):
-      input = data['image']
-      target = data['label']
+    
+    ### For original BCCD dataset
+    # for step, data in enumerate(test_queue):
+    #   input = data['image']
+    #   target = data['label']
+    #   input = input.to("cuda", dtype=torch.float)
+    #   target = target.to("cuda", dtype=torch.long) 
+
+    ### For Mendely PBC_dataset
+    for step, (input, target) in enumerate(test_queue):
       input = input.to("cuda", dtype=torch.float)
       target = target.to("cuda", dtype=torch.long) 
 
