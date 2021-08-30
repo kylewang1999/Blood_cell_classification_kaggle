@@ -31,12 +31,9 @@ def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_sp
             dataset = torchvision.datasets.ImageFolder(root=os.path.join(data_dir, split), transform=transform)
             wbc_types = ['eosinophil', 'lymphocyte', 'monocyte', 'neutrophil']
             wbc_types_idx = [dataset.class_to_idx[t] for t in wbc_types] 
-            for i in range(50): 
-                print(dataset.imgs[i])
             # Select only 4 types of WBC & Put them in appropriate subset
             idx = [i for i in range(len(dataset)) if dataset.imgs[i][1] in wbc_types_idx]
             subset = Subset(dataset, idx)
-            print('Number of types in subset: {}'.format(len(subset)))
             dataloaders.append(data.DataLoader(subset, batch_size=batch_size, shuffle=True,  num_workers=num_workers))
             
     else:
