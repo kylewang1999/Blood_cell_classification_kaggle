@@ -73,7 +73,6 @@ def main():
   # test_queue = torch.utils.data.DataLoader(
   #     test_data, batch_size=args.batch_size, shuffle=False, pin_memory=True, num_workers=2)
 
-  # dataset_path = "/content/drive/MyDrive/kaggle/blood_cell/"  # Path for colab
   # dataset_path = "./kaggle/blood_cell/" # Path for local
   dataset_path = args.dataset_path
   train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path)

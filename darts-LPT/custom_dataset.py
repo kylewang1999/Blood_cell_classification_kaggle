@@ -35,60 +35,78 @@ class Custom_Dataset(Dataset):
 
 # Returns train/test/valid dataset as dataframes
 def parse_dataset(dataset_path):
-    # Train/Test/Val Paths
-    # dataset_path = "../kaggle/blood_cell/"
-    Train_Data_Path = Path(dataset_path + "Train")
-    Test_Data_Path = Path(dataset_path + "Test")
-    Validation_Data_Path = Path(dataset_path + "Valid")
-    # If working on local, get absolute paths
-    Train_Data_Path = Train_Data_Path.resolve()
-    Test_Data_Path = Test_Data_Path.resolve()
-    Validation_Data_Path = Validation_Data_Path.resolve()
-    print(Train_Data_Path)
-
-    # JPG Paths and Lables (Approx. 3000 imgs per type)
-    Train_JPG_Path = list(Train_Data_Path.glob(r"**/*.jpeg"))
-    Test_JPG_Path = list(Test_Data_Path.glob(r"**/*.jpeg"))
-    Validation_JPG_Path = list(Validation_Data_Path.glob(r"**/*.jpeg"))
-
     def get_category_id(path):
         category = os.path.split(os.path.split(path)[0])[1]
         CATEGORIES = ['EOSINOPHIL','LYMPHOCYTE', 'MONOCYTE', 'NEUTROPHIL']
         return CATEGORIES.index(category)
+        
+    if os.path.isdir(dataset_path + "Train"):
+        # Train/Test/Val Paths
+        # dataset_path = "../kaggle/blood_cell/"
+        Train_Data_Path = Path(dataset_path + "Train").resolve()
+        Test_Data_Path = Path(dataset_path + "Test").resolve()
+        Validation_Data_Path = Path(dataset_path + "Valid").resolve()
+        print(Train_Data_Path)
 
-    Train_JPG_Labels = list(map(get_category_id,Train_JPG_Path))   
-    Test_JPG_Labels = list(map(get_category_id,Test_JPG_Path))
-    Validation_JPG_Labels = list(map(get_category_id,Validation_JPG_Path))
-    print("Total Number of Entries: {}".format(len(Train_JPG_Labels)+len(Test_JPG_Labels)+len(Validation_JPG_Labels)))
-    print("Class Counts - Train | Test | Validation")
-    print("EOSINOPHIL:   {} | {} | {}".format(Train_JPG_Labels.count(0), Test_JPG_Labels.count(0), Validation_JPG_Labels.count(0)))
-    print("LYMPHOCYTE:   {} | {} | {}".format(Train_JPG_Labels.count(1), Test_JPG_Labels.count(1), Validation_JPG_Labels.count(1)))
-    print("MONOCYTE  :   {} | {} | {}".format(Train_JPG_Labels.count(2), Test_JPG_Labels.count(2), Validation_JPG_Labels.count(2)))
-    print("NEUTROPHIL:   {} | {} | {}".format(Train_JPG_Labels.count(3), Test_JPG_Labels.count(3), Validation_JPG_Labels.count(3)))
+        # JPG Paths and Lables (Approx. 3000 imgs per type)
+        Train_JPG_Path = list(Train_Data_Path.glob(r"**/*.jpeg"))
+        Test_JPG_Path = list(Test_Data_Path.glob(r"**/*.jpeg"))
+        Validation_JPG_Path = list(Validation_Data_Path.glob(r"**/*.jpeg"))
 
-    # Convert Paths from List to Seires
-    Train_JPG_Path_Series = pd.Series(Train_JPG_Path,name="JPG").astype(str)
-    Train_JPG_Labels_Series = pd.Series(Train_JPG_Labels,name="CATEGORY")
+        Train_JPG_Labels = list(map(get_category_id,Train_JPG_Path))   
+        Test_JPG_Labels = list(map(get_category_id,Test_JPG_Path))
+        Validation_JPG_Labels = list(map(get_category_id,Validation_JPG_Path))
+        print("Total Number of Entries: {}".format(len(Train_JPG_Labels)+len(Test_JPG_Labels)+len(Validation_JPG_Labels)))
+        print("Class Counts - Train | Test | Validation")
+        print("EOSINOPHIL:   {} | {} | {}".format(Train_JPG_Labels.count(0), Test_JPG_Labels.count(0), Validation_JPG_Labels.count(0)))
+        print("LYMPHOCYTE:   {} | {} | {}".format(Train_JPG_Labels.count(1), Test_JPG_Labels.count(1), Validation_JPG_Labels.count(1)))
+        print("MONOCYTE  :   {} | {} | {}".format(Train_JPG_Labels.count(2), Test_JPG_Labels.count(2), Validation_JPG_Labels.count(2)))
+        print("NEUTROPHIL:   {} | {} | {}".format(Train_JPG_Labels.count(3), Test_JPG_Labels.count(3), Validation_JPG_Labels.count(3)))
 
-    Test_JPG_Path_Series = pd.Series(Test_JPG_Path,name="JPG").astype(str)
-    Test_JPG_Labels_Series = pd.Series(Test_JPG_Labels,name="CATEGORY")
+        # Convert Paths from List to Seires
+        Train_JPG_Path_Series = pd.Series(Train_JPG_Path,name="JPG").astype(str)
+        Train_JPG_Labels_Series = pd.Series(Train_JPG_Labels,name="CATEGORY")
 
-    Validation_JPG_Path_Series = pd.Series(Validation_JPG_Path,name="JPG").astype(str)
-    Validation_JPG_Labels_Series = pd.Series(Validation_JPG_Labels,name="CATEGORY")
+        Test_JPG_Path_Series = pd.Series(Test_JPG_Path,name="JPG").astype(str)
+        Test_JPG_Labels_Series = pd.Series(Test_JPG_Labels,name="CATEGORY")
 
-    # Retrieve data from paths, store in dataframes
-    Main_Train_Data = pd.concat([Train_JPG_Path_Series,Train_JPG_Labels_Series],axis=1)
-    Main_Test_Data = pd.concat([Test_JPG_Path_Series,Test_JPG_Labels_Series],axis=1)
-    Main_Validation_Data = pd.concat([Validation_JPG_Path_Series,Validation_JPG_Labels_Series],axis=1)
+        Validation_JPG_Path_Series = pd.Series(Validation_JPG_Path,name="JPG").astype(str)
+        Validation_JPG_Labels_Series = pd.Series(Validation_JPG_Labels,name="CATEGORY")
+
+        # Retrieve data from paths, store in dataframes
+        Main_Train_Data = pd.concat([Train_JPG_Path_Series,Train_JPG_Labels_Series],axis=1)
+        Main_Test_Data = pd.concat([Test_JPG_Path_Series,Test_JPG_Labels_Series],axis=1)
+        Main_Validation_Data = pd.concat([Validation_JPG_Path_Series,Validation_JPG_Labels_Series],axis=1)
+        
+        # Shuffling
+        Main_Train_Data = Main_Train_Data.sample(frac=1).reset_index(drop=True)
+        Main_Test_Data = Main_Test_Data.sample(frac=1).reset_index(drop=True)
+        Main_Validation_Data = Main_Validation_Data.sample(frac=1).reset_index(drop=True)
+        print(Main_Train_Data.iloc[0,0])
+        print(Main_Train_Data.head(-1))
+
+        return Main_Train_Data, Main_Test_Data, Main_Validation_Data
     
-    # Shuffling
-    Main_Train_Data = Main_Train_Data.sample(frac=1).reset_index(drop=True)
-    Main_Test_Data = Main_Test_Data.sample(frac=1).reset_index(drop=True)
-    Main_Validation_Data = Main_Validation_Data.sample(frac=1).reset_index(drop=True)
-    print(Main_Train_Data.iloc[0,0])
-    print(Main_Train_Data.head(-1))
+    else:
+        Data_Path = Path(dataset_path).resolve()
+        JPG_Path = list(Data_Path.glob(r"**/*.jpg"))
+        JPG_Labels = list(map(get_category_id, JPG_Path))
+        print("Total Number of Entries: {}".format(len(JPG_Labels)))
+        print("Class Counts")
+        print("EOSINOPHIL: {}".format(JPG_Labels.count(0)))
+        print("LYMPHOCYTE: {}".format(JPG_Labels.count(1)))
+        print("MONOCYTE  : {}".format(JPG_Labels.count(2)))
+        print("NEUTROPHIL: {}".format(JPG_Labels.count(3)))
 
-    return Main_Train_Data, Main_Test_Data, Main_Validation_Data
+        JPG_Path_Series = pd.Series(JPG_Path,name="JPG").astype(str)
+        JPG_Labels_Series = pd.Series(JPG_Labels,name="CATEGORY")
+        Test_Data = pd.concat([JPG_Path_Series, JPG_Labels_Series],axis=1)
+
+        Test_Data = Test_Data.sample(frac=1).reset_index(drop=True)
+        print(Test_Data.iloc[0,0])
+        print(Test_Data.head(-1))
+
+        return None, Test_Data, None
 
 # Aug. transforms to be applied to train/valid images
 def create_transforms():
@@ -117,13 +135,13 @@ def create_transforms():
 
     return train_transform, valid_transform
 
-# Reutnr preprocessed train/valid dataset as pytorch DataLoader
+# Return preprocessed train/valid dataset as pytorch DataLoader
 def preprocess_data(train_df, valid_df, batch_size, train_search=False):
     train_transform, valid_transform = create_transforms()
 
-    x_train = train_df.JPG
-    y_train = train_df.CATEGORY
-    train_dataset = Custom_Dataset(x_train.values, y_train.values, train_transform)
+    x_train = train_df.JPG if train_df else None
+    y_train = train_df.CATEGORY if train_df else None
+    train_dataset = Custom_Dataset(x_train.values, y_train.values, train_transform) if train_df else None
 
     if train_search:    # Portioning Dataset for train_search_ts.py
         train_portion = 0.5
@@ -146,34 +164,8 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
                 indices[split:num_train]),
             pin_memory=False, num_workers=4)
 
-        # Logging for dubgging
         print("train_q: {} | valid_q: {} | external_q: {}".format(
             len(train_queue), len(valid_queue), len(external_queue)))
-        # for step, data in enumerate(train_queue):
-        #     input = data['image']
-        #     target = data['label']
-        #     if step == 10:
-        #         print(input.size)
-        #         print(target.numpy())
-        #     if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
-        #         print("SOMETHING IS WRONG WITH TRAIN QUEUE")
-        # for step, data in enumerate(valid_queue):
-        #     input = data['image']
-        #     target = data['label']
-        #     if step == 10:
-        #         print(input.size)
-        #         print(target.numpy())
-        #     if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
-        #         print("SOMETHING IS WRONG WITH VALID QUEUE")
-        # for step, data in enumerate(external_queue):
-        #     input = data['image']
-        #     target = data['label']
-        #     if step == 10:
-        #         print(input.size)
-        #         print(target.numpy())
-        #     if np.any(np.isnan(input.numpy())) or np.any(np.isinf(input.numpy())) or np.any(np.isnan(target.numpy())):
-        #         print("SOMETHING IS WRONG WITH EXTERNAL QUEUE")
-        #     # print(target.numpy)
         
         return train_queue, valid_queue, external_queue
         
@@ -185,7 +177,7 @@ def preprocess_data(train_df, valid_df, batch_size, train_search=False):
         train_queue = DataLoader(
             dataset = train_dataset, batch_size = batch_size,
             shuffle = True,
-            num_workers = 4)
+            num_workers = 4) if train_dataset else None
         valid_queue = DataLoader(
             dataset = valid_dataset, batch_size = batch_size,
             shuffle = False,
