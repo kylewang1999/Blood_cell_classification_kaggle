@@ -12,7 +12,7 @@ import numpy as np
 from typing import List
 
 
-def get_dataloaders(data_dir : str = './kaggle/PBC_dataset_split/PBC_dataset_split', batch_size : int = 4, num_workers : int = 4, train_search = False) -> List[data.DataLoader]:
+def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_split', batch_size : int = 4, num_workers : int = 4, train_search = False) -> List[data.DataLoader]:
 
 
     transform = transforms.Compose([
