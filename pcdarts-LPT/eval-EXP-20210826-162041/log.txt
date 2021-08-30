@@ -1,0 +1,12 @@
+2021-08-26 16:20:43,776 gpu device = 0
+2021-08-26 16:20:43,776 args = Namespace(arch='PC_BLOOD_30', auxiliary=False, auxiliary_weight=0.4, batch_size=8, cutout=False, cutout_length=16, data='../data', dataset_path='/pranjal-volume/BCCD_Reorganized/', drop_path_prob=0.3, epochs=600, gpu=0, grad_clip=5, init_channels=36, layers=12, learning_rate=0.025, model_path='saved_models', momentum=0.9, report_freq=50, save='eval-EXP-20210826-162041', seed=0, set='cifar10', weight_decay=0.0003)
+2021-08-26 16:20:46,340 param size = 1.901128MB
+2021-08-26 16:20:46,624 epoch 0 lr 2.499966e-02
+2021-08-26 16:20:52,696 train 000 1.752218e+00 25.000000 50.000000
+2021-08-26 16:21:05,232 train 050 1.779764e+00 25.490196 53.431373
+2021-08-26 16:21:19,951 train 100 1.749237e+00 25.247525 51.113861
+2021-08-26 16:21:32,149 train 150 1.649508e+00 25.413907 51.158940
+2021-08-26 16:21:44,462 train 200 1.601110e+00 25.310945 50.684080
+2021-08-26 16:21:56,789 train 250 1.569066e+00 25.498008 50.896414
+2021-08-26 16:22:09,018 train 300 1.549611e+00 24.833887 50.705980
+2021-08-26 16:22:21,471 train 350 1.527389e+00 25.747863 51.388889

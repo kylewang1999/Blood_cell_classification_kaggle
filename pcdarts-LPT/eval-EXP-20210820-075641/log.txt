@@ -1,0 +1,3 @@
+2021-08-20 07:56:42,218 gpu device = 0
+2021-08-20 07:56:42,218 args = Namespace(arch='PCDARTS', auxiliary=True, auxiliary_weight=0.4, batch_size=8, cutout=False, cutout_length=16, data='/pranjal-volume/blood-cells/', dataset_path='/local/kaggle/blood_cell/', drop_path_prob=0.2, epochs=50, gpu=0, grad_clip=5, init_channels=36, is_cifar100=0, layers=20, learning_rate=0.025, model_path='saved_models', momentum=0.9, report_freq=50, resume='', save='eval-EXP-20210820-075641', seed=0, weight_decay=0.0003)
+2021-08-20 07:56:44,650 param size = 3.631216MB

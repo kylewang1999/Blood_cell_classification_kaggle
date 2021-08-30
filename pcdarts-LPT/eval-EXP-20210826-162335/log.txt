@@ -1,0 +1,2 @@
+2021-08-26 16:23:36,611 gpu device = 0
+2021-08-26 16:23:36,611 args = Namespace(arch='PC_BLOOD_30', auxiliary=False, auxiliary_weight=0.4, batch_size=8, cutout=False, cutout_length=16, data='../data', dataset_path='/pranjal-volume/BCCD_Reorganized/', drop_path_prob=0.3, epochs=600, gpu=0, grad_clip=5, init_channels=36, layers=12, learning_rate=0.025, model_path='saved_models', momentum=0.9, report_freq=50, save='eval-EXP-20210826-162335', seed=0, set='cifar10', weight_decay=0.0003)

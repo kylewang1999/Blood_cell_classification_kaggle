@@ -1,0 +1,5 @@
+2021-08-20 08:07:23,125 gpu device = 0
+2021-08-20 08:07:23,126 args = Namespace(arch='PC_DARTS_Blood', auxiliary=False, auxiliary_weight=0.4, batch_size=4, cutout=False, cutout_length=16, data='../data', dataset_path='/pranjal-volume/blood-cells/', drop_path_prob=0.3, epochs=600, gpu=0, grad_clip=5, init_channels=36, layers=14, learning_rate=0.025, model_path='saved_models', momentum=0.9, report_freq=50, save='eval-EXP-20210820-080721', seed=0, set='cifar10', weight_decay=0.0003)
+2021-08-20 08:07:25,614 param size = 2.301808MB
+2021-08-20 08:07:25,885 epoch 0 lr 2.499966e-02
+2021-08-20 08:07:30,731 train 000 1.150915e+00 25.000000 100.000000
