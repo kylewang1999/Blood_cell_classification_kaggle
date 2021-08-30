@@ -60,7 +60,7 @@ logging.getLogger().addHandler(fh)
 
 # CIFAR_CLASSES = 10
 # CIFAR100_CLASSES = 100
-NUM_CLASSES = 8
+NUM_CLASSES = 4
 
 def save_checkpoint(state, checkpoint=args.save, filename='checkpoint.pth.tar'):
     filepath = os.path.join(checkpoint, filename)
