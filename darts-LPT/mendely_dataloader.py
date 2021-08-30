@@ -26,13 +26,6 @@ def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_sp
     wbc_types = ['eosinophil', 'lymphocyte', 'monocyte', 'neutrophil']
     dataloaders = []
 
-    # construct the full dataset
-    dataset = ImageFolder("image-folders",...)
-    # select the indices of all other folders
-    idx = [i for i in range(len(dataset)) if dataset.imgs[i][1] != dataset.class_to_idx['class_s']]
-    # build the appropriate subset
-    subset = Subset(dataset, idx)
-
     if not train_search:
         for split in splits:
             # Full Train/Test/Valid set containing all 8 types of PBC
