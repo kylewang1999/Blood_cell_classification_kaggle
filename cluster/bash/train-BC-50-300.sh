@@ -19,11 +19,11 @@ org_dir () {
     mv monocyte 2_monocyte
     mv neutrophil 3_neutrophil
 }
-cd PBC_dataset_split/PBC_dataset_split/Train
+cd PBC_dataset_split/PBC_dataset_split/Train && pwd
 org_dir
-cd ../Test
+cd ../Test && pwd
 org_dir
-cd ../Val
+cd ../Val && pwd
 org_dir
 
 cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
