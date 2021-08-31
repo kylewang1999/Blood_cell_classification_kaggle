@@ -52,7 +52,7 @@ parser.add_argument('--fine_tune', type=int, default=0, help='0 Train all layer,
 
 args = parser.parse_args()
 
-if args.fine_tune:
+if args.fine_tune == 0:
   args.save = 'eval-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
 else:
   args.save = 'eval-tune-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
