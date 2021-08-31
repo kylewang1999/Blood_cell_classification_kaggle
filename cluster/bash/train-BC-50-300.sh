@@ -1,5 +1,6 @@
 # Set up Kaggle
 pip install kaggle
+mkdir  ~/.kaggle/
 cp /k5wang-volume/Blood_cell_classification_kaggle/kaggle/kaggle.json ~/.kaggle/kaggle.json
 
 echo Start Copying
