@@ -31,7 +31,7 @@ python test.py --model_path ./eval-Blood_cell-50Epoch-WAUX-LR0.005/weights.pt --
 
 # Hybrid Darts-LPT
 # python test.py --model_path ./eval-darts-hybrid-reorg-20210823-122343/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
-python test.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+# python test.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
     # 22 Epochs
     # 08/23 03:41:37 PM test_acc 96.364363
     # 290 Epoch
@@ -44,6 +44,14 @@ python test.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt
     # 08/24 07:16:17 AM test_acc 99.800240
     # 300 Epoch
     # 08/25 01:57:31 AM test_acc 100.000000
+
+# Fintuned BC-50-300
+# test.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+
+
+# Fintuned BC-50-300 Hybrid Model
+# python test.py --model_path ./eval-tune-BC-50-300-20210830-174325/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+
 
     
     

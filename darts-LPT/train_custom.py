@@ -18,6 +18,7 @@ from  pathlib import Path
 
 from torch.autograd import Variable
 from model import NetworkCIFAR as Network # Trains the network in model.py 
+from model import NetworkHybrid as NetworkHybrid
 # import custom_dataset
 import mendely_dataloader as loader
 
@@ -46,10 +47,15 @@ parser.add_argument('--grad_clip', type=float, default=5, help='gradient clippin
 parser.add_argument('--resume', type=str, default='')
 parser.add_argument('--is_cifar100', type=int, default=0)
 # parser.add_argument('--dataset_path', type=str, default='/local/kaggle/BCCD_Reorganized/', help='location of the data corpus')
-parser.add_argument('--local_mount', type=int, default=1, help='0 use /local on kubectl, 1 use mounted volume')
+parser.add_argument('--local_mount', type=int, default=1, help='1 use /local on kubectl, 0 use persistent volume')
+parser.add_argument('--fine_tune', type=int, default=0, help='0 Train all layer, 1 Fine tune only final layer')
+
 args = parser.parse_args()
 
-args.save = 'eval-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
+if args.fine_tune:
+  args.save = 'eval-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
+else:
+  args.save = 'eval-tune-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
 utils.create_exp_dir(args.save, scripts_to_save=glob.glob('*.py'))
 
 log_format = '%(asctime)s %(message)s'
@@ -88,6 +94,14 @@ def main():
   model = Network(args.init_channels, NUM_CLASSES, args.layers, args.auxiliary, genotype)
   model = model.cuda()
 
+  if args.fine_tune:
+      # Freez all model weights
+    for param in model.parameters():
+      param.requires_grad = False
+    # Un-freez the final classifier
+    for param in model.classifier.parameters():
+      param.requires_grad = True
+
   logging.info("param size = %fMB", utils.count_parameters_in_MB(model))
 
   criterion = nn.CrossEntropyLoss()
@@ -103,7 +117,7 @@ def main():
   # dataset_path = args.dataset_path
   # train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
   # train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
-  if args.local_mount:
+  if args.local_mount == 0:
     dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
   else:
     dataloaders = loader.get_dataloaders(data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split',batch_size = args.batch_size, num_workers = 2)

@@ -14,6 +14,7 @@ import torch.backends.cudnn as cudnn
 
 from torch.autograd import Variable
 from model import NetworkCIFAR as Network
+from model import NetworkHybrid as NetworkHybrid
 import custom_dataset
 # import custom_dataset_improved 
 

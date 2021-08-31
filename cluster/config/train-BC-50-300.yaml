@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-train-50-300-reorg  # 50 search epochs / 300 train epochs
+  name: k5wang-train-50-300-pbc  # 50 search epochs / 300 train epochs
   namespace: ecepxie
 spec:
   template:
@@ -58,6 +58,6 @@ spec:
                 operator: In # Use NotIn for other types
                 values: 
                   # - 1080Ti
-                  # - 2080Ti
-                  - TITANRTX
+                  - 2080Ti
+                  # - TITANRTX
 

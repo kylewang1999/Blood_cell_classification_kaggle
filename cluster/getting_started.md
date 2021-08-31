@@ -1,4 +1,4 @@
-
+****
 # A Guide to Delopy Through Kubectl
 
 - Namespace: ```ecepxie```
@@ -248,15 +248,12 @@ alias alias_name="command_to_run"
     alias getpods="kubectl get pods | grep k5wang"
     alias getjobs="kubectl get jobs | grep k5wang"
     alias get="getpods && getjobs"
-    alias logs="kubectl logs -l name=k5wang_train"
+    alias logs="kubectl logs -l name= <Job Name in .yaml>"
     alias kubelogin="kubectl create -f login.yaml"
     alias kubelogout="kubectl delete -f login.yaml"
     alias kubeexec="kubectl exec -it k5wang-login bash"
-    alias p="pwd"
-    alias weight_path="/k5wang-volume/Blood_cell_classification_kaggle/cluster/eval-EXP-CIFAR-25EPOCHS"
-    alias test="python test_colab.py --model_path ../cluster/eval-EXP-CIFAR-25EPOCHS/weights.pt"
     ```
-2. Remember to restart the shell to make the change take 
+   
 
 [**Delete failed pods**](https://gist.github.com/zparnold/0e72d7d3563da2704b900e3b953a8229): 
   ```bash
@@ -285,14 +282,10 @@ Executing a job will likely create multiple pods with non-human-friendly suffixe
     ```bash
     kubectl delete pods -l ${label_key}=${label_value}
     ```
-**Check Dir Size**
-  ```bash
-  du -hs
-  ```
-**Check # of Files in a Dir**
-  ```bash
-  ls | wc -l
-  ```
+**Check Dir Size:** ```du -hs```**; Check # of Files in a Dir:**```ls | wc -l```
+
+**Move Dir to Another Non-empty Dir**
+  ```(cd ${Dir_to_move} && tar c .) | (cd ${Dir_destination} && tar xf -)```
 
 ## VI. Train / Test Command
 **Composing LPT with DARTS:**
