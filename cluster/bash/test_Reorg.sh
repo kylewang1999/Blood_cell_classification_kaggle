@@ -38,19 +38,21 @@ python test.py --model_path ./eval-Blood_cell-50Epoch-WAUX-LR0.005/weights.pt --
     # 08/25 02:00:38 AM test_acc 100.000000
 
 
-# BC-50-300
-# python test.py --model_path ./eval-BC-50-300-Reorg-20210823-122141/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12
-    # ~150 Epoch
-    # 08/24 07:16:17 AM test_acc 99.800240
-    # 300 Epoch
-    # 08/25 01:57:31 AM test_acc 100.000000
+### ---- Using NEW PBC Dataset ----
 
-# Fintuned BC-50-300
+# BC-50-300 
+# python test.py --model_path ./eval-BC-50-300-Reorg-20210823-122141/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12
+
+# Fintuned BC-50-300 Hybrid Model
+# python train_custom.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt --epochs 100 --arch DARTS_TS_BC_50EPOCH --save hybrid-BC-50-300 --local_mount 0
 # test.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
 
 
-# Fintuned BC-50-300 Hybrid Model
-# python test.py --model_path ./eval-tune-BC-50-300-20210830-174325/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+# Fintuned BC-50-300 
+python test.py --model_path ./eval-tune-BC-50-300-20210830-174325/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+
+
+
 
 
     
