@@ -84,7 +84,7 @@ parser.add_argument('--is_cifar100', type=int, default=0)
 parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='/content/drive/MyDrive/kaggle/blood_cell/', help='location of the data corpus')
-arser.add_argument('--local_mount', type=int, default=1, help='1 use /local on kubectl, 0 use persistent volume')
+parser.add_argument('--local_mount', type=int, default=1, help='1 use /local on kubectl, 0 use persistent volume')
 args = parser.parse_args()
 
 args.save = 'search-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
