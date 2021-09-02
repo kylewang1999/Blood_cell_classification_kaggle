@@ -183,7 +183,7 @@ def main():
         dataloaders = loader.get_dataloaders(batch_size = args.batch_size, train_search=True)
     else:
         path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
-    dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
+        dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
   
     torch.cuda.empty_cache()  # Clear GPU Memory
     
