@@ -56,9 +56,9 @@ spec:
                 operator: In # Use NotIn for other types
                 values: 
                   - 1080Ti
-                  # - 1080Ti
-                  # - 1080Ti
-                  # - 1080Ti
+                  - 1080Ti
+                  - 1080Ti
+                  - 1080Ti
                   # - 2080Ti
                   # - TITANRTX
               - key: nautilus.io/disktype
