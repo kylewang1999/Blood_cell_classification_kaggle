@@ -287,7 +287,7 @@ def train(train_queue, valid_queue, external_queue,
   #   target = data['label']
     input = input.to("cuda", dtype=torch.float)
     target = target.to("cuda", dtype=torch.long)
-    model.train()
+    # model.train()
     n = input.size(0) 
 
     input_search, target_search = next(iter(valid_queue))

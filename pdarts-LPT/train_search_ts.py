@@ -19,6 +19,7 @@ from genotypes import Genotype
 from teacher import *
 from teacher_update import *
 import custom_dataset
+import mendely_dataloader as loader
 
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--workers', type=int, default=2,
@@ -87,7 +88,7 @@ parser.add_argument('--teacher_arch', type=str, default='18')
 parser.add_argument('--is_cifar100', type=int, default=0)
 parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
-
+parser.add_argument('--local_mount', type=int, default=1, help='1 use /local on kubectl, 0 use persistent volume')
 args = parser.parse_args()
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
@@ -110,7 +111,7 @@ logging.getLogger().addHandler(fh)
 #     CIFAR_CLASSES = 10
 #     data_folder = '../data'
 
-NUM_CLASSES = 4
+NUM_CLASSES = 8
 
 
 def main():
@@ -174,10 +175,16 @@ def main():
     #         indices[split:num_train]),
     #     pin_memory=False, num_workers=4)
 
-    dataset_path = args.dataset_path
-    train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
-    train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
-        train_data, _, args.batch_size, train_search=True)
+    # dataset_path = args.dataset_path
+    # train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
+    # train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
+    #     train_data, _, args.batch_size, train_search=True)
+    if args.local_mount == 0:
+        dataloaders = loader.get_dataloaders(batch_size = args.batch_size, train_search=True)
+    else:
+        path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+    dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
+  
     torch.cuda.empty_cache()  # Clear GPU Memory
     
     # build Network
@@ -264,8 +271,8 @@ def main():
                     drop_rate[sp]) * (epochs - epoch - 1) / epochs
                 model.module.update_p()
                 train_acc, train_obj = train(
-                    train_queue, valid_queue,
-                    external_queue,
+                    # train_queue, valid_queue,external_queue,
+                    dataloaders[0], dataloaders[1], dataloaders[2],
                     model,
                     teacher_w,
                     teacher_h,
@@ -284,8 +291,8 @@ def main():
                     drop_rate[sp]) * np.exp(-(epoch - eps_no_arch) * scale_factor)
                 model.module.update_p()
                 train_acc, train_obj = train(
-                    train_queue, valid_queue,
-                    external_queue,
+                    # train_queue, valid_queue,external_queue,
+                    dataloaders[0], dataloaders[1], dataloaders[2],
                     model,
                     teacher_w,
                     teacher_h,
@@ -435,19 +442,19 @@ def train(train_queue,
     top1 = utils.AvgrageMeter()
     top5 = utils.AvgrageMeter()
 
-    # for step, (input, target) in enumerate(train_queue):
-    #     model.train()
-    #     n = input.size(0)
-    #     input = input.cuda()
-    #     target = target.cuda(non_blocking=True)
-
-    for step, data in enumerate(train_queue):
-        input = data['image']
-        target = data['label']
+    for step, (input, target) in enumerate(train_queue):
+        model.train()
+        n = input.size(0)
         input = input.to("cuda", dtype=torch.float)
         target = target.to("cuda", dtype=torch.long)
-        model.train()
-        n = input.size(0) 
+
+    # for step, data in enumerate(train_queue):
+    #     input = data['image']
+    #     target = data['label']
+    #     input = input v
+    #     target = target.to("cuda", dtype=torch.long)
+    #     model.train()
+    #     n = input.size(0) 
 
         # external data.
         try:
@@ -458,10 +465,10 @@ def train(train_queue,
             # input_external, target_external = next(external_queue_iter)
             data_external = next(external_queue_iter)
 
-        # input_external = input_external.cuda()
-        # target_external = target_external.cuda(non_blocking=True)
-        input_external = data_external['image'].to("cuda", dtype=torch.float)
-        target_external = data_external['label'].to("cuda", dtype=torch.long) 
+        input_external = input_external.to("cuda", dtype=torch.float)
+        target_external = target_external.to("cuda", dtype=torch.long)
+        # input_external = data_external['image'].to("cuda", dtype=torch.float)
+        # target_external = data_external['label'].to("cuda", dtype=torch.long) 
 
         if train_arch:
             # In the original implementation of DARTS, it is input_search, target_search = next(iter(valid_queue), which slows down
@@ -474,10 +481,10 @@ def train(train_queue,
                 # input_search, target_search = next(valid_queue_iter)
                 data_search = next(valid_queue_iter)
             
-            # input_search = input_search.cuda()
-            # target_search = target_search.cuda(non_blocking=True)
-            input_search = data_search['image'].to("cuda", dtype=torch.float)
-            target_search = data_search['label'].to("cuda", dtype=torch.long) 
+            input_search = input_search.to("cuda", dtype=torch.long)
+            target_search = target_search.to("cuda", dtype=torch.long)
+            # input_search = data_search['image'].to("cuda", dtype=torch.float)
+            # target_search = data_search['label'].to("cuda", dtype=torch.long) 
 
             optimizer_a.zero_grad()
             # logits = model(input_search)
@@ -545,8 +552,8 @@ def train(train_queue,
         optimizer_w.step()
         optimizer_h.step()
 
-        # prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
-        prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
+        prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+        # prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
         objs.update(loss.data.item(), n)
         top1.update(prec1.data.item(), n)
         top5.update(prec5.data.item(), n)
@@ -565,22 +572,22 @@ def infer(valid_queue, model, criterion):
     model.eval()
 
     with torch.no_grad():
-        # for step, (input, target) in enumerate(valid_queue):
-        #     input = input.cuda()
-        #     target = target.cuda(non_blocking=True)
-        for step, data in enumerate(valid_queue):
-            input = data['image']
-            target = data['label']
+        for step, (input, target) in enumerate(valid_queue):
             input = input.to("cuda", dtype=torch.float)
-            target = target.to("cuda", dtype=torch.long) 
+            target = target.to("cuda", dtype=torch.long)
+        # for step, data in enumerate(valid_queue):
+        #     input = data['image']
+        #     target = data['label']
+        #     input = input.to("cuda", dtype=torch.float)
+        #     target = target.to("cuda", dtype=torch.long) 
 
             with torch.no_grad():
                 logits = model(input)
                 # loss = criterion(logits, target)
                 loss = criterion(logits + 1e-12, target)
 
-            # prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
-            prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
+            prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
+            # prec1, prec5 = utils.accuracy(logits, target, topk=(1, 2))
             n = input.size(0)
             objs.update(loss.data.item(), n)
             top1.update(prec1.data.item(), n)
