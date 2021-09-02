@@ -458,12 +458,12 @@ def train(train_queue,
 
         # external data.
         try:
-            # input_external, target_external = next(external_queue_iter)
-            data_external = next(external_queue_iter)
+            input_external, target_external = next(external_queue_iter)
+            # data_external = next(external_queue_iter)
         except:
             external_queue_iter = iter(external_queue)
-            # input_external, target_external = next(external_queue_iter)
-            data_external = next(external_queue_iter)
+            input_external, target_external = next(external_queue_iter)
+            # data_external = next(external_queue_iter)
 
         input_external = input_external.to("cuda", dtype=torch.float)
         target_external = target_external.to("cuda", dtype=torch.long)
@@ -474,12 +474,12 @@ def train(train_queue,
             # In the original implementation of DARTS, it is input_search, target_search = next(iter(valid_queue), which slows down
             # the training when using PyTorch 0.4 and above.
             try:
-                # input_search, target_search = next(valid_queue_iter)
-                data_search = next(valid_queue_iter)
+                input_search, target_search = next(valid_queue_iter)
+                # data_search = next(valid_queue_iter)
             except:
                 valid_queue_iter = iter(valid_queue)
-                # input_search, target_search = next(valid_queue_iter)
-                data_search = next(valid_queue_iter)
+                input_search, target_search = next(valid_queue_iter)
+                # data_search = next(valid_queue_iter)
             
             input_search = input_search.to("cuda", dtype=torch.long)
             target_search = target_search.to("cuda", dtype=torch.long)
