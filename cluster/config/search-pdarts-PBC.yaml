@@ -23,11 +23,11 @@ spec:
           requests:
             memory: "8Gi"
             cpu: "2"
-            nvidia.com/gpu: 2
+            nvidia.com/gpu: 4
           limits:
             memory: "8Gi"
             cpu: "2"
-            nvidia.com/gpu: 2
+            nvidia.com/gpu: 4
 
         volumeMounts:
         - name: k5wang-volume     #use your own volume path
@@ -56,11 +56,15 @@ spec:
                 operator: In # Use NotIn for other types
                 values: 
                   - 1080Ti
-                  - 1080Ti
+                  # - 1080Ti
+                  # - 1080Ti
+                  # - 1080Ti
                   # - 2080Ti
                   # - TITANRTX
               - key: nautilus.io/disktype
-                value: nvme
+                operator: In
+                values: 
+                  - nvme
 
       # nodeSelector:
       #   gpu-type: "1080Ti"
