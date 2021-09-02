@@ -292,10 +292,10 @@ def train(train_queue, valid_queue, external_queue,
 
     input_search, target_search = next(iter(valid_queue))
     input_search = input_search.to("cuda", dtype=torch.float)
-    target_search = target_search.to("cuda", dtype=torch.float)
+    target_search = target_search.to("cuda", dtype=torch.long)
     input_external, target_external = next(iter(external_queue))
     input_external = input_external.to("cuda", dtype=torch.float)
-    target_external = target_external.to("cuda", dtype=torch.float)
+    target_external = target_external.to("cuda", dtype=torch.long)
 
     # get a random minibatch from the search queue with replacement
     # data_search = next(iter(valid_queue))
