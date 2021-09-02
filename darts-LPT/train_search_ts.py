@@ -19,6 +19,7 @@ from architect_ts import Architect
 from teacher import *
 from teacher_update import *
 import custom_dataset
+import mendely_dataloader as loader
 
 
 parser = argparse.ArgumentParser("cifar")
@@ -83,6 +84,7 @@ parser.add_argument('--is_cifar100', type=int, default=0)
 parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='/content/drive/MyDrive/kaggle/blood_cell/', help='location of the data corpus')
+arser.add_argument('--local_mount', type=int, default=1, help='1 use /local on kubectl, 0 use persistent volume')
 args = parser.parse_args()
 
 args.save = 'search-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
@@ -98,7 +100,7 @@ logging.getLogger().addHandler(fh)
 
 # CIFAR_CLASSES = 10
 # CIFAR100_CLASSES = 100
-NUM_CLASSES = 4
+NUM_CLASSES = 8
 
 
 def main():
@@ -184,10 +186,17 @@ def main():
   # else:
   #   train_data = dset.CIFAR10(root=args.data, train=True,
   #                           download=True, transform=train_transform)
-  dataset_path = args.dataset_path
-  train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
-  train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
-    train_data, _, args.batch_size, train_search=True)
+  # dataset_path = args.dataset_path
+  # train_data, _, _ = custom_dataset.parse_dataset(dataset_path) 
+  # train_queue, valid_queue, external_queue = custom_dataset.preprocess_data(
+  #   train_data, _, args.batch_size, train_search=True)
+
+  if args.local_mount == 0:
+    dataloaders = loader.get_dataloaders(batch_size = args.batch_size, train_search=True)
+  else:
+    path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+    dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
+  
   torch.cuda.empty_cache()  # Clear GPU Memory
 
   # num_train = len(train_data)
@@ -235,7 +244,8 @@ def main():
 
     # training
     train_acc, train_obj = train(
-        train_queue, valid_queue, external_queue,
+        # train_queue, valid_queue, external_queue,
+        dataloaders[0], dataloaders[1], dataloaders[2],
         model, architect, criterion, optimizer,
         optimizer_w,
         optimizer_h,
@@ -269,38 +279,38 @@ def train(train_queue, valid_queue, external_queue,
   top1 = utils.AvgrageMeter()
   top5 = utils.AvgrageMeter()
 
-  # for step, (input, target) in enumerate(train_queue):
-  #   model.train()
-  #   n = input.size(0)
-  #   input = input.cuda()
-  #   target = target.cuda(non_blocking=True)
-  for step, data in enumerate(train_queue):
-    input = data['image']
-    target = data['label']
+  for step, (input, target) in enumerate(train_queue):
+    model.train()
+    n = input.size(0)
+  # for step, data in enumerate(train_queue):
+  #   input = data['image']
+  #   target = data['label']
     input = input.to("cuda", dtype=torch.float)
     target = target.to("cuda", dtype=torch.long)
     model.train()
     n = input.size(0) 
 
-    # get a random minibatch from the search queue with replacement
-    data_search = next(iter(valid_queue))
-    input_search = data_search['image']
-    target_search = data_search['label']
+    input_search, target_search = next(iter(valid_queue))
     input_search = input_search.to("cuda", dtype=torch.float)
-    target_search = target_search.to("cuda", dtype=torch.long) 
-
-    data_external= next(iter(external_queue))
-    input_external = data_external['image']
-    target_external = data_external['label']
+    target_search = target_search.to("cuda", dtype=torch.float)
+    input_external, target_external = next(iter(external_queue))
     input_external = input_external.to("cuda", dtype=torch.float)
-    target_external = target_external.to("cuda", dtype=torch.long) 
+    target_external = target_external.to("cuda", dtype=torch.float)
 
-    # input_search, target_search = next(iter(valid_queue))
-    # input_search = input_search.cuda()
-    # target_search = target_search.cuda(non_blocking=True)
-    # input_external, target_external = next(iter(external_queue))
-    # input_external = input_external.cuda()
-    # target_external = target_external.cuda(non_blocking=True)
+    # get a random minibatch from the search queue with replacement
+    # data_search = next(iter(valid_queue))
+    # input_search = data_search['image']
+    # target_search = data_search['label']
+    # input_search = input_search.to("cuda", dtype=torch.float)
+    # target_search = target_search.to("cuda", dtype=torch.long) 
+
+    # data_external= next(iter(external_queue))
+    # input_external = data_external['image']
+    # target_external = data_external['label']
+    # input_external = input_external.to("cuda", dtype=torch.float)
+    # target_external = target_external.to("cuda", dtype=torch.long) 
+
+
 
     architect.step(input, target, input_external, target_external,
                    lr, optimizer, teacher_w, teacher_v, unrolled=args.unrolled)
@@ -358,14 +368,14 @@ def infer(valid_queue, model, criterion):
   top5 = utils.AvgrageMeter()
   model.eval()
   with torch.no_grad():
-    # for step, (input, target) in enumerate(valid_queue):
-    #     input = input.cuda()
-    #     target = target.cuda(non_blocking=True)
-    for step, data in enumerate(valid_queue):
-        input = data['image']
-        target = data['label']
+    for step, (input, target) in enumerate(valid_queue):
         input = input.to("cuda", dtype=torch.float)
-        target = target.to("cuda", dtype=torch.long) 
+        target = target.to("cuda", dtype=torch.float)
+    # for step, data in enumerate(valid_queue):
+    #     input = data['image']
+    #     target = data['label']
+    #     input = input.to("cuda", dtype=torch.float)
+    #     target = target.to("cuda", dtype=torch.long) 
 
         logits = model(input)
         # loss = criterion(logits, target)

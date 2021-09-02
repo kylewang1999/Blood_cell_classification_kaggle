@@ -13,7 +13,7 @@ from torchvision.datasets import ImageFolder
 from torch.utils.data import Subset
 
 
-def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_split', batch_size : int = 4, num_workers : int = 4, train_search = False) -> List[data.DataLoader]:
+def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_split', batch_size : int = 4, num_workers : int = 2, train_search = False) -> List[data.DataLoader]:
 
     transform = transforms.Compose([
         transforms.Resize((128,128)),
@@ -42,7 +42,10 @@ def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_sp
         split = int(0.5  * len(dataset))
         indices = list(range(len(dataset)))
         np.random.shuffle(indices)
+        # Train queue
         dataloaders.append(data.DataLoader(dataset, sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]), batch_size=batch_size, num_workers=num_workers))
+        # Valid queue
         dataloaders.append(data.DataLoader(dataset, sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:]), batch_size=batch_size, num_workers=num_workers))
+        # External queue
         dataloaders.append(data.DataLoader(dataset, sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:]), batch_size=batch_size, num_workers=num_workers))
     return dataloaders

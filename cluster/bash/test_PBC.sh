@@ -48,9 +48,17 @@ python test.py --model_path ./eval-Blood_cell-50Epoch-WAUX-LR0.005/weights.pt --
 # test.py --model_path ./eval-darts-hybrid-reorg-20210828-063008/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
 
 
-# Fintuned BC-50-300 
-python test.py --model_path ./eval-tune-BC-50-300-20210830-174325/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+# Fintuned PBC BC-50-300 
+# python test.py --model_path ./eval-tune-BC-50-300-20210830-174325/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+    # 85% accuracy
 
+# From-scratch PBC BC-50-300
+python test.py --model_path ./eval-BC-50-300-PBC-20210831-183328/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+    # 85 Epoch
+    # 09/02 02:55:11 AM test 000 1.075268e-04 100.000000 100.000000
+    # 09/02 02:55:27 AM test 050 2.204224e-02 99.754902 100.000000
+    # 09/02 02:55:41 AM test 100 1.724381e-02 99.752475 100.000000
+    # 09/02 02:55:50 AM test_acc 99.816176
 
 
 
