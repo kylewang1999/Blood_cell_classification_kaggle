@@ -23,11 +23,11 @@ spec:
           requests:
             memory: "8Gi"
             cpu: "2"
-            nvidia.com/gpu: 1
+            nvidia.com/gpu: 4
           limits:
             memory: "8Gi"
             cpu: "2"
-            nvidia.com/gpu: 1
+            nvidia.com/gpu: 4
 
         volumeMounts:
         - name: k5wang-volume     #use your own volume path
@@ -48,8 +48,8 @@ spec:
           emptyDir: {}
       
       nodeSelector:
-        # gpu-type: "1080Ti"
-        gpu-type: "2080Ti"
+        gpu-type: "1080Ti"
+        # gpu-type: "2080Ti"
         # gpu-type: "TITANRTX"
         nautilus.io/disktype: nvme   
 
