@@ -10,11 +10,11 @@ spec:
     args: ["-c", "sleep infinity"]
     resources:
       requests:
-        memory: "12Gi"
+        memory: "3Gi"
         cpu: "1"
         nvidia.com/gpu: "1"
       limits:
-        memory: "12Gi"
+        memory: "3Gi"
         cpu: "1"
         nvidia.com/gpu: "1"
     volumeMounts:
