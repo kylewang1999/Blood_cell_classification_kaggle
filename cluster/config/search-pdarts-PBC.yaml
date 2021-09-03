@@ -23,11 +23,11 @@ spec:
           requests:
             memory: "8Gi"
             cpu: "2"
-            nvidia.com/gpu: 4
+            nvidia.com/gpu: 1
           limits:
             memory: "8Gi"
             cpu: "2"
-            nvidia.com/gpu: 4
+            nvidia.com/gpu: 1
 
         volumeMounts:
         - name: k5wang-volume     #use your own volume path

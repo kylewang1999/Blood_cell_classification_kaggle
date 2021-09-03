@@ -259,9 +259,11 @@ def main():
     scheduler_h.step()
 
     # validation
-    valid_acc, valid_obj = infer(valid_queue, model, criterion)
-    # external_acc, external_obj = infer(external_queue, model, criterion)
+    # valid_acc, valid_obj = infer(valid_queue, model, criterion)
+    valid_acc, valid_obj = infer(dataloaders[1], model, criterion)
     logging.info('valid_acc %f', valid_acc)
+
+    # external_acc, external_obj = infer(external_queue, model, criterion)
     # logging.info('external_acc %f', external_acc)
 
     utils.save(model, os.path.join(args.save, 'weights.pt'))
