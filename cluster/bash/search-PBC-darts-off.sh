@@ -27,7 +27,7 @@ org_dir
 cd ../Val
 org_dir
 
-cd /k5wang-volume/Blood_cell_classification_kaggle/pdarts-LPT
+cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
 pwd
 echo Copying DONE.
 duration=$SECONDS
