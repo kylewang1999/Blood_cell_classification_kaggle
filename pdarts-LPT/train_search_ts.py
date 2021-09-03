@@ -314,7 +314,8 @@ def main():
             logging.info('Epoch time: %ds', epoch_duration)
             # validation
             if epochs - epoch < 5:
-                valid_acc, valid_obj = infer(valid_queue, model, criterion)
+                # valid_acc, valid_obj = infer(valid_queue, model, criterion)
+                valid_acc, valid_obj = infer(dataloaders[1], model, criterion)
                 logging.info('Valid_acc %f', valid_acc)
         utils.save(model, os.path.join(args.save, 'weights.pt'))
         print('------Dropping %d paths------' % num_to_drop[sp])
