@@ -82,10 +82,11 @@ def main():
 
   criterion = nn.CrossEntropyLoss()
   criterion = criterion.cuda()
-  if args.is_cifar100:
-    model = Network(args.init_channels, CIFAR100_CLASSES, args.layers, criterion)
-  else:
-    model = Network(args.init_channels, CIFAR_CLASSES, args.layers, criterion)
+  # if args.is_cifar100:
+  #   model = Network(args.init_channels, CIFAR100_CLASSES, args.layers, criterion)
+  # else:
+  #   model = Network(args.init_channels, CIFAR_CLASSES, args.layers, criterion)
+  model = Network(args.init_channels, NUM_CLASSES, args.layers, criterion)
   model = model.cuda()
   logging.info("param size = %fMB", utils.count_parameters_in_MB(model))
   if args.is_parallel:
