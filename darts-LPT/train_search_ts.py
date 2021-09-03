@@ -372,7 +372,7 @@ def infer(valid_queue, model, criterion):
   with torch.no_grad():
     for step, (input, target) in enumerate(valid_queue):
         input = input.to("cuda", dtype=torch.float)
-        target = target.to("cuda", dtype=torch.float)
+        target = target.to("cuda", dtype=torch.long)
     # for step, data in enumerate(valid_queue):
     #     input = data['image']
     #     target = data['label']

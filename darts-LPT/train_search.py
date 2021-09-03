@@ -16,6 +16,7 @@ import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 from model_search import Network
 from architect import Architect
+import mendely_dataloader as loader
 
 
 parser = argparse.ArgumentParser("cifar")
@@ -43,6 +44,7 @@ parser.add_argument('--arch_learning_rate', type=float, default=3e-4, help='lear
 parser.add_argument('--arch_weight_decay', type=float, default=1e-3, help='weight decay for arch encoding')
 parser.add_argument('--is_parallel', type=int, default=0)
 parser.add_argument('--is_cifar100', type=int, default=0)
+parser.add_argument('--local_mount', type=int, default=1, help='1 use /local on kubectl, 0 use persistent volume')
 args = parser.parse_args()
 
 args.save = 'search-{}-{}'.format(args.save, time.strftime("%Y%m%d-%H%M%S"))
@@ -56,8 +58,9 @@ fh.setFormatter(logging.Formatter(log_format))
 logging.getLogger().addHandler(fh)
 
 
-CIFAR_CLASSES = 10
-CIFAR100_CLASSES = 100
+# CIFAR_CLASSES = 10
+# CIFAR100_CLASSES = 100
+NUM_CLASSES = 8
 
 
 def main():
@@ -98,28 +101,34 @@ def main():
       momentum=args.momentum,
       weight_decay=args.weight_decay)
 
-  if args.is_cifar100:
-    train_transform, valid_transform = utils._data_transforms_cifar100(args)
+  # if args.is_cifar100:
+  #   train_transform, valid_transform = utils._data_transforms_cifar100(args)
+  # else:
+  #   train_transform, valid_transform = utils._data_transforms_cifar10(args)
+  # if args.is_cifar100:
+  #   train_data = dset.CIFAR100(root=args.data, train=True, download=True, transform=train_transform)
+  # else:
+  #   train_data = dset.CIFAR10(root=args.data, train=True, download=True, transform=train_transform)
+
+  # num_train = len(train_data)
+  # indices = list(range(num_train))
+  # split = int(np.floor(args.train_portion * num_train))
+
+  # train_queue = torch.utils.data.DataLoader(
+  #     train_data, batch_size=args.batch_size,
+  #     sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
+  #     pin_memory=False, num_workers=4)
+
+  # valid_queue = torch.utils.data.DataLoader(
+  #     train_data, batch_size=args.batch_size,
+  #     sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:num_train]),
+  #     pin_memory=False, num_workers=4)
+
+  if args.local_mount == 0:
+    dataloaders = loader.get_dataloaders(batch_size = args.batch_size, train_search=True)
   else:
-    train_transform, valid_transform = utils._data_transforms_cifar10(args)
-  if args.is_cifar100:
-    train_data = dset.CIFAR100(root=args.data, train=True, download=True, transform=train_transform)
-  else:
-    train_data = dset.CIFAR10(root=args.data, train=True, download=True, transform=train_transform)
-
-  num_train = len(train_data)
-  indices = list(range(num_train))
-  split = int(np.floor(args.train_portion * num_train))
-
-  train_queue = torch.utils.data.DataLoader(
-      train_data, batch_size=args.batch_size,
-      sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
-      pin_memory=False, num_workers=4)
-
-  valid_queue = torch.utils.data.DataLoader(
-      train_data, batch_size=args.batch_size,
-      sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:num_train]),
-      pin_memory=False, num_workers=4)
+    path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+    dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, float(args.epochs), eta_min=args.learning_rate_min)
@@ -138,11 +147,13 @@ def main():
     print(F.softmax(model.alphas_reduce, dim=-1))
 
     # training
-    train_acc, train_obj = train(train_queue, valid_queue, model, architect, criterion, optimizer, lr)
+    # train_acc, train_obj = train(train_queue, valid_queue, model, architect, criterion, optimizer, lr)
+    train_acc, train_obj = train(dataloaders[0], dataloaders[1], model, architect, criterion, optimizer, lr)
     logging.info('train_acc %f', train_acc)
     scheduler.step()
     # validation
-    valid_acc, valid_obj = infer(valid_queue, model, criterion)
+    # valid_acc, valid_obj = infer(valid_queue, model, criterion)
+    valid_acc, valid_obj = infer(dataloaders[1], model, criterion)
     logging.info('valid_acc %f', valid_acc)
 
     utils.save(model, os.path.join(args.save, 'weights.pt'))
@@ -156,8 +167,8 @@ def train(train_queue, valid_queue, model, architect, criterion, optimizer, lr):
   for step, (input, target) in enumerate(train_queue):
     model.train()
     n = input.size(0)
-    input = input.cuda()
-    target = target.cuda(non_blocking=True)
+    input = input.to("cuda", dtype=torch.float)
+    target = target.to("cuda", dtype=torch.long)
 
     # get a random minibatch from the search queue with replacement
     input_search, target_search = next(iter(valid_queue))
@@ -192,8 +203,8 @@ def infer(valid_queue, model, criterion):
   model.eval()
   with torch.no_grad():
     for step, (input, target) in enumerate(valid_queue):
-        input = input.cuda()
-        target = target.cuda(non_blocking=True)
+        input = input.to("cuda", dtype=torch.float)
+        target = target.to("cuda", dtype=torch.long)
 
         logits = model(input)
         loss = criterion(logits, target)

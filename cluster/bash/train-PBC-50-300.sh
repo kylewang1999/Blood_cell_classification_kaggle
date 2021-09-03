@@ -34,6 +34,6 @@ duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
 
-python train_custom.py --batch_size 8 --layers 12 --arch DARTS_TS_BC_50EPOCH --save BC-50-300-PBC 
+python train_custom.py --batch_size 8 --layers 12 --arch DARTS_TS_BC_50EPOCH --save PBC-50-300
 
 # python train_custom.py --batch_size 8 --layers 12 --arch DARTS_TS_BC_50EPOCH --save FOO --local_mount 0
