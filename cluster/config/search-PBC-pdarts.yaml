@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-search-pdarts-pbc-50
+  name: k5wang-search-pbc-pdarts-lpt
   namespace: ecepxie
 spec:
   template:

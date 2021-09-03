@@ -16,12 +16,12 @@ import copy
 from model_search import Network
 from genotypes import PRIMITIVES
 from genotypes import Genotype
-
+import mendely_dataloader as loader
 
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--workers', type=int, default=2, help='number of workers to load dataset')
 parser.add_argument('--batch_size', type=int, default=96, help='batch size')
-parser.add_argument('--learning_rate', type=float, default=0.025, help='init learning rate')
+parser.add_argument('--learning_rate', type=float, default=0.005, help='init learning rate')
 parser.add_argument('--learning_rate_min', type=float, default=0.0, help='min learning rate')
 parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
 parser.add_argument('--weight_decay', type=float, default=3e-4, help='weight decay')
@@ -44,7 +44,7 @@ parser.add_argument('--dropout_rate', action='append', default=[], help='dropout
 parser.add_argument('--add_width', action='append', default=['0'], help='add channels')
 parser.add_argument('--add_layers', action='append', default=['0'], help='add layers')
 parser.add_argument('--cifar100', action='store_true', default=False, help='search with cifar100 dataset')
-
+parser.add_argument('--local_mount', type=int, default=1, help='1 use /local on kubectl, 0 use persistent volume')
 args = parser.parse_args()
 
 args.save = '{}search-{}-{}'.format(args.save, args.note, time.strftime("%Y%m%d-%H%M%S"))
@@ -57,12 +57,14 @@ fh = logging.FileHandler(os.path.join(args.save, 'log.txt'))
 fh.setFormatter(logging.Formatter(log_format))
 logging.getLogger().addHandler(fh)
 
-if args.cifar100:
-    CIFAR_CLASSES = 100
-    data_folder = 'cifar-100-python'
-else:
-    CIFAR_CLASSES = 10
-    data_folder = 'cifar-10-batches-py'
+# if args.cifar100:
+#     CIFAR_CLASSES = 100
+#     data_folder = 'cifar-100-python'
+# else:
+#     CIFAR_CLASSES = 10
+#     data_folder = 'cifar-10-batches-py'
+NUM_CLASSES = 8
+
 def main():
     if not torch.cuda.is_available():
         logging.info('No GPU device available')
@@ -74,28 +76,34 @@ def main():
     torch.cuda.manual_seed(args.seed)
     logging.info("args = %s", args)
     #  prepare dataset
-    if args.cifar100:
-        train_transform, valid_transform = utils._data_transforms_cifar100(args)
+    # if args.cifar100:
+    #     train_transform, valid_transform = utils._data_transforms_cifar100(args)
+    # else:
+    #     train_transform, valid_transform = utils._data_transforms_cifar10(args)
+    # if args.cifar100:
+    #     train_data = dset.CIFAR100(root=args.tmp_data_dir, train=True, download=True, transform=train_transform)
+    # else:
+    #     train_data = dset.CIFAR10(root=args.tmp_data_dir, train=True, download=True, transform=train_transform)
+    if args.local_mount == 0:
+        dataloaders = loader.get_dataloaders(batch_size = args.batch_size, train_search=True)
     else:
-        train_transform, valid_transform = utils._data_transforms_cifar10(args)
-    if args.cifar100:
-        train_data = dset.CIFAR100(root=args.tmp_data_dir, train=True, download=True, transform=train_transform)
-    else:
-        train_data = dset.CIFAR10(root=args.tmp_data_dir, train=True, download=True, transform=train_transform)
+        path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+        dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
+    torch.cuda.empty_cache()  # Clear GPU Memory
 
-    num_train = len(train_data)
-    indices = list(range(num_train))
-    split = int(np.floor(args.train_portion * num_train))
+    # num_train = len(train_data)
+    # indices = list(range(num_train))
+    # split = int(np.floor(args.train_portion * num_train))
 
-    train_queue = torch.utils.data.DataLoader(
-        train_data, batch_size=args.batch_size,
-        sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
-        pin_memory=True, num_workers=args.workers)
+    # train_queue = torch.utils.data.DataLoader(
+    #     train_data, batch_size=args.batch_size,
+    #     sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[:split]),
+    #     pin_memory=True, num_workers=args.workers)
 
-    valid_queue = torch.utils.data.DataLoader(
-        train_data, batch_size=args.batch_size,
-        sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:num_train]),
-        pin_memory=True, num_workers=args.workers)
+    # valid_queue = torch.utils.data.DataLoader(
+    #     train_data, batch_size=args.batch_size,
+    #     sampler=torch.utils.data.sampler.SubsetRandomSampler(indices[split:num_train]),
+    #     pin_memory=True, num_workers=args.workers)
     
     # build Network
     criterion = nn.CrossEntropyLoss()
@@ -152,17 +160,21 @@ def main():
             if epoch < eps_no_arch:
                 model.module.p = float(drop_rate[sp]) * (epochs - epoch - 1) / epochs
                 model.module.update_p()
-                train_acc, train_obj = train(train_queue, valid_queue, model, network_params, criterion, optimizer, optimizer_a, lr, train_arch=False)
+                # train_acc, train_obj = train(train_queue, valid_queue, model, network_params, criterion, optimizer, optimizer_a, lr, train_arch=False)
+                train_acc, train_obj = train(dataloaders[0], dataloaders[1], model, network_params, criterion, optimizer, optimizer_a, lr, train_arch=False)
             else:
                 model.module.p = float(drop_rate[sp]) * np.exp(-(epoch - eps_no_arch) * scale_factor) 
                 model.module.update_p()                
-                train_acc, train_obj = train(train_queue, valid_queue, model, network_params, criterion, optimizer, optimizer_a, lr, train_arch=True)
+                # train_acc, train_obj = train(train_queue, valid_queue, model, network_params, criterion, optimizer, optimizer_a, lr, train_arch=True)
+                train_acc, train_obj = train(dataloaders[0], dataloaders[1], model, network_params, criterion, optimizer, optimizer_a, lr, train_arch=False)
             logging.info('Train_acc %f', train_acc)
             epoch_duration = time.time() - epoch_start
             logging.info('Epoch time: %ds', epoch_duration)
             # validation
             if epochs - epoch < 5:
-                valid_acc, valid_obj = infer(valid_queue, model, criterion)
+                # valid_acc, valid_obj = infer(valid_queue, model, criterion)
+                valid_acc, valid_obj = infer(dataloaders[1], model, criterion)
+
                 logging.info('Valid_acc %f', valid_acc)
         utils.save(model, os.path.join(args.save, 'weights.pt'))
         print('------Dropping %d paths------' % num_to_drop[sp])
@@ -269,8 +281,9 @@ def train(train_queue, valid_queue, model, network_params, criterion, optimizer,
     for step, (input, target) in enumerate(train_queue):
         model.train()
         n = input.size(0)
-        input = input.cuda()
-        target = target.cuda(non_blocking=True)
+        input = input.to("cuda", dtype=torch.float)
+        target = target.to("cuda", dtype=torch.long)
+
         if train_arch:
             # In the original implementation of DARTS, it is input_search, target_search = next(iter(valid_queue), which slows down
             # the training when using PyTorch 0.4 and above. 
@@ -279,8 +292,8 @@ def train(train_queue, valid_queue, model, network_params, criterion, optimizer,
             except:
                 valid_queue_iter = iter(valid_queue)
                 input_search, target_search = next(valid_queue_iter)
-            input_search = input_search.cuda()
-            target_search = target_search.cuda(non_blocking=True)
+            input_search = input_search.to("cuda", dtype=torch.float)
+            target_search = target_search.to("cuda", dtype=torch.long)
             optimizer_a.zero_grad()
             logits = model(input_search)
             loss_a = criterion(logits, target_search)
@@ -290,7 +303,7 @@ def train(train_queue, valid_queue, model, network_params, criterion, optimizer,
 
         optimizer.zero_grad()
         logits = model(input)
-        loss = criterion(logits, target)
+        loss = criterion(logits + 1e-12, target)
 
         loss.backward()
         nn.utils.clip_grad_norm_(network_params, args.grad_clip)
@@ -314,11 +327,11 @@ def infer(valid_queue, model, criterion):
     model.eval()
 
     for step, (input, target) in enumerate(valid_queue):
-        input = input.cuda()
-        target = target.cuda(non_blocking=True)
+        input = input.to("cuda", dtype=torch.float)
+        target = target.to("cuda", dtype=torch.long)
         with torch.no_grad():
             logits = model(input)
-            loss = criterion(logits, target)
+            loss = criterion(logits + 1e-12, target)
 
         prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
         n = input.size(0)

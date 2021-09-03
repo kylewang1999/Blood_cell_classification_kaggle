@@ -4,7 +4,7 @@ metadata:
   # labels:
   #   k8s-app: research
   # generateName: k5wang-job-train     # Name of Job
-  name: k5wang-search-pbc-darts-off
+  name: k5wang-search-pbc-pdarts-off
   namespace: ecepxie
 spec:
   template:
@@ -18,14 +18,14 @@ spec:
         image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
         imagePullPolicy: Always
         workingDir: /local
-        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/search-PBC-darts-off.sh"]
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/search-PBC-pdarts-off.sh"]
         resources:
           requests:
-            memory: "2Gi"
+            memory: "3Gi"
             cpu: "1"
             nvidia.com/gpu: 1
           limits:
-            memory: "2Gi"
+            memory: "3Gi"
             cpu: "1"
             nvidia.com/gpu: 1
 
@@ -46,13 +46,31 @@ spec:
             claimName: k5wang-volume-datasets
         - name: local
           emptyDir: {}
+      
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: gpu-type
+                operator: In # Use NotIn for other types
+                values: 
+                  - 1080Ti
+                  # - 1080Ti
+                  # - 1080Ti
+                  # - 1080Ti
+                  # - 2080Ti
+                  # - TITANRTX
+              - key: nautilus.io/disktype
+                operator: In
+                values: 
+                  - nvme
 
-      nodeSelector:
-        # gpu-type: "1080"
-        gpu-type: "1080Ti"
-        # gpu-type: "2080Ti"
-        # gpu-type: "TITANRTX"
-        nautilus.io/disktype: nvme   
+      # nodeSelector:
+      #   gpu-type: "1080Ti"
+      #   # gpu-type: "2080Ti"
+      #   # gpu-type: "TITANRTX"
+      #   nautilus.io/disktype: nvme   
 
       # affinity:
       #   nodeAffinity:
