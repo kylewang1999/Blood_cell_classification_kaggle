@@ -21,12 +21,12 @@ spec:
         command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/search-PBC-pdarts.sh"]
         resources:
           requests:
-            memory: "8Gi"
-            cpu: "2"
+            memory: "3Gi"
+            cpu: "1"
             nvidia.com/gpu: 1
           limits:
-            memory: "8Gi"
-            cpu: "2"
+            memory: "3Gi"
+            cpu: "1"
             nvidia.com/gpu: 1
 
         volumeMounts:
