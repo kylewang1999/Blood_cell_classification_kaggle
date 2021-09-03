@@ -21,7 +21,7 @@ spec:
         command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/search-PBC-darts-off.sh"]
         resources:
           requests:
-            memory: "3Gi"
+            memory: "2Gi"
             cpu: "1"
             nvidia.com/gpu: 1
           limits:
@@ -55,8 +55,8 @@ spec:
               - key: gpu-type
                 operator: In # Use NotIn for other types
                 values: 
-                  # - 1080Ti
-                  - 2080Ti
+                  - 1080Ti
+                  # - 2080Ti
                   # - TITANRTX
               - key: nautilus.io/disktype
                 operator: In
