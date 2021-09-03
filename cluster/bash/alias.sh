@@ -14,8 +14,3 @@ alias weight_path="/k5wang-volume/Blood_cell_classification_kaggle/cluster/eval-
 alias test="python test_colab.py --model_path ../cluster/eval-EXP-CIFAR-25EPOCHS/weights.pt"
 #/k5wang-volume/Blood_cell_classification_kaggle/cluster
 #/k5wang-volume/Blood_cell_classification_kaggle/darts-LPT/search-GPU1080-20210725-084552#
-
-
-pranjal-pc-blood-mendtl5l7-vh6w7                      1/1     Running     0          29h
-pranjal-pc-blood-weightsx4g5c-qv4bb                   0/1     Completed   0          3d22h
-pranjal-pc-blood8nwkh-h6k2j 
