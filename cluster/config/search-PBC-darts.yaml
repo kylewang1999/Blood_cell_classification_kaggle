@@ -18,7 +18,7 @@ spec:
         image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
         imagePullPolicy: Always
         workingDir: /local
-        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/search-PBC.sh"]
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/search-PBC-darts.sh"]
         resources:
           requests:
             memory: "3Gi"
