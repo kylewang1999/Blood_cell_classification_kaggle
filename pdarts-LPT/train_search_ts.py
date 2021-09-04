@@ -482,7 +482,7 @@ def train(train_queue,
                 input_search, target_search = next(valid_queue_iter)
                 # data_search = next(valid_queue_iter)
             
-            input_search = input_search.to("cuda", dtype=torch.long)
+            input_search = input_search.to("cuda", dtype=torch.float)
             target_search = target_search.to("cuda", dtype=torch.long)
             # input_search = data_search['image'].to("cuda", dtype=torch.float)
             # target_search = data_search['label'].to("cuda", dtype=torch.long) 
