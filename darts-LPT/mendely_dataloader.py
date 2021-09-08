@@ -22,7 +22,9 @@ def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_sp
                             std=[0.229, 0.224, 0.225] )
         ])
 
-    splits = ['Train','Val', 'Test']
+    # 64% | 24% | 12%
+    # splits = ['Train','Val', 'Test']
+    splits = ['Train','Test', 'Val']
     dataloaders = []
 
     if not train_search:
