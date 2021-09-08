@@ -20,22 +20,21 @@ org_dir () {
     mv monocyte 2_monocyte
     mv neutrophil 3_neutrophil
 }
-cd PBC_dataset_split/PBC_dataset_split/Train
+cd PBC_dataset_split/PBC_dataset_split/Train && pwd
 org_dir
-cd ../Test
+cd ../Test && pwd
 org_dir
-cd ../Val
+cd ../Val && pwd
 org_dir
 
-cd /k5wang-volume/Blood_cell_classification_kaggle/pdarts-LPT
+cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
 pwd
 echo Copying DONE.
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
-python train_search_ts.py --batch_size 4 --epochs 1 --note PBC-FOO
-# python train_search.py --batch_size 4 --epochs 1 --save FOO  --local_mount 0
-# python train_search_ts.py --batch_size 4 --epochs 1 --save FOO --local_mount 0
 
+python train_custom.py --batch_size 8 --layers 12 --arch DARTS_OFF_PBC_50 --save PBC-darts-off-50
 
-
+# python train_custom.py --batch_size 8 --layers 12 --arch DARTS_TS_BC_50EPOCH --save FOO --local_mount 0
+# python train_custom.py --batch_size 8 --layers 12 --arch DARTS_OFF_PBC_50 --save FOO --local_mount 0
