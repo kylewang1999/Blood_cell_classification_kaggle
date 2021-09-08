@@ -33,6 +33,6 @@ echo Copying DONE.
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
-# Default: --batch_size 8 --layers 12 --epochs 120
+# Default: --batch_size 4 --layers 12 --epochs 120
 python train_custom.py --arch DARTS_LPT_PBC_50 --save PBC-darts-lpt-50
 # python train_custom.py --batch_size 4 --arch DARTS_LPT_PBC_50 --save FOO --local_mount 0
