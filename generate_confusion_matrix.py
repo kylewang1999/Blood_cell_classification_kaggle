@@ -20,7 +20,7 @@ dataset_path = '/pranjal-volume/mendely_data_final'
 
 y_test = []  
 preds = []
-for batch in tqdm(test_queue):
+for item in tqdm(test_queue):
     logits, _ = model(item[0].cuda())
     y_test += logits.argmax(dim=1).detach().cpu().tolist()
     preds += item[1].detach().cpu().tolist()
