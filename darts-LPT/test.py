@@ -16,6 +16,7 @@ from torch.autograd import Variable
 from model import NetworkCIFAR as Network
 from model import NetworkHybrid as NetworkHybrid
 import custom_dataset
+import mendely_dataloader as loader
 # import custom_dataset_improved 
 
 parser = argparse.ArgumentParser("cifar")
@@ -42,7 +43,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO,
     format=log_format, datefmt='%m/%d %I:%M:%S %p')
 
 # CIFAR_CLASSES = 10
-NUM_CLASSES = 4
+NUM_CLASSES = 8
 
 def main():
   if not torch.cuda.is_available():
@@ -82,7 +83,6 @@ def main():
   # _, test_queue = custom_dataset.preprocess_data(train_data, test_data, args.batch_size)
 
   ## For Loading Mendely PBC_dataset
-  import mendely_dataloader as loader
   dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
   
   model.drop_path_prob = args.drop_path_prob
