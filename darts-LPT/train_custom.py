@@ -98,8 +98,8 @@ def main():
   # Fine tune for the BCCD_410 dataset
   if args.fine_tune:
     utils.load(model, args.model_path)
-
     model.classifier = nn.Linear(model.C_prev, NUM_CLASSES_410)
+    model = model.cuda()
 
     # model = nn.Sequential(model. nn.Linear(NUM_CLASSES, NUM_CLASSES_410))
 
