@@ -64,10 +64,7 @@ def main():
   logging.info("args = %s", args)
 
   genotype = eval("genotypes.%s" % args.arch)
-  if args.dataset_410 == 1:
-    model = Network(args.init_channels, NUM_CLASSES_410, args.layers, args.auxiliary, genotype)
-  else:
-    model = Network(args.init_channels, NUM_CLASSES, args.layers, args.auxiliary, genotype)
+  model = Network(args.init_channels, NUM_CLASSES, args.layers, args.auxiliary, genotype)
   model = model.cuda()
   utils.load(model, args.model_path)
 
@@ -93,6 +90,7 @@ def main():
     ## For Loading Mendely PBC_dataset
     dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2, 
       data_dir='../kaggle/BCCD_Dataset/BCCD_410')
+    args.report_freq = 1
   else:
     dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
 
