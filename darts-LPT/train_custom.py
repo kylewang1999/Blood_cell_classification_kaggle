@@ -68,6 +68,7 @@ logging.getLogger().addHandler(fh)
 # CIFAR_CLASSES = 10
 # CIFAR100_CLASSES = 100
 NUM_CLASSES = 8
+NUN_CLASSES_410 = 5
 
 def save_checkpoint(state, checkpoint=args.save, filename='checkpoint.pth.tar'):
     filepath = os.path.join(checkpoint, filename)
@@ -94,12 +95,14 @@ def main():
   model = Network(args.init_channels, NUM_CLASSES, args.layers, args.auxiliary, genotype)
   model = model.cuda()
 
+  # Fine tune for the BCCD_410 dataset
   if args.fine_tune:
-      # Freez all model weights
-    for param in model.parameters():
+    model = Network(args.init_channels, NUM_CLASSES_410, args.layers, args.auxiliary, genotype)
+    model = model.cuda()
+    utils.load(model, args.model_path)
+    for param in model.parameters(): # Freez all model weights
       param.requires_grad = False
-    # Un-freez the final classifier
-    for param in model.classifier.parameters():
+    for param in model.classifier.parameters(): # Un-freez the final classifier
       param.requires_grad = True
 
   logging.info("param size = %fMB", utils.count_parameters_in_MB(model))
@@ -117,10 +120,18 @@ def main():
   # dataset_path = args.dataset_path
   # train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path) 
   # train_queue, valid_queue = custom_dataset.preprocess_data(train_data, valid_data, args.batch_size)
-  if args.local_mount == 0:
-    dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
+ 
+
+  if args.fine_tune == 1:
+    dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2, 
+      data_dir='../kaggle/BCCD_Dataset/BCCD_410_split')
+    args.report_freq = 10
   else:
-    dataloaders = loader.get_dataloaders(data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split',batch_size = args.batch_size, num_workers = 2)
+    if args.local_mount == 0:
+      dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
+    else:
+      dataloaders = loader.get_dataloaders(data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split',batch_size = args.batch_size, num_workers = 2)
+    
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
   start_epoch = 0

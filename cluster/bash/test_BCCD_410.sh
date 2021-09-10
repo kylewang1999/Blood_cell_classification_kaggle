@@ -40,6 +40,11 @@ org_dir () {
 # cd ../Val && pwd
 # org_dir
 
+
+
+# Fine tune for 50 epochs first
+python train_custom.py --model_path ./eval-PBC-darts-off-50-20210908-092014/weights.pt --arch DARTS_OFF_PBC_50 --save FOO --fine_tune 1 
+
 cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
 # --batch_size 8 --layers 12
 python test.py --model_path ./eval-PBC-darts-off-50-20210908-092014/weights.pt --arch DARTS_OFF_PBC_50 --dataset_410 1
