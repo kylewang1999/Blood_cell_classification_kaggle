@@ -97,9 +97,11 @@ def main():
 
   # Fine tune for the BCCD_410 dataset
   if args.fine_tune:
-    model = Network(args.init_channels, NUM_CLASSES_410, args.layers, args.auxiliary, genotype)
-    model = model.cuda()
     utils.load(model, args.model_path)
+    for name, child in model.named_children():
+        for x, y in child.named_children():
+            print(name,x)
+    # model.classifier = nn.Linear
     for param in model.parameters(): # Freez all model weights
       param.requires_grad = False
     for param in model.classifier.parameters(): # Un-freez the final classifier
