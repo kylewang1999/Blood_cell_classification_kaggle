@@ -104,7 +104,8 @@ def main():
     # model.features[-1] = nn.Linear(model.C_prev, NUM_CLASSES_410)
     # model.features[-1] = nn.Linear(62208, NUM_CLASSES_410)
     # net.features[15] = nn.Conv2d(96, 128, 1, 1) 
-    model.modules()[-1] = nn.Linear(model.C_prev, NUM_CLASSES_410)
+    modules = model.modules() 
+    modules[-1] = nn.Linear(model.C_prev, NUM_CLASSES_410)
 
     for param in model.parameters(): # Freez all model weights
       param.requires_grad = False
