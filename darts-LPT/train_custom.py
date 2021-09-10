@@ -98,10 +98,13 @@ def main():
   # Fine tune for the BCCD_410 dataset
   if args.fine_tune:
     utils.load(model, args.model_path)
-    for name, child in model.named_children():
-        for x, y in child.named_children():
-            print(name,x)
-    # model.classifier = nn.Linear
+    # for name, child in model.named_children():
+    #     for x, y in child.named_children():
+    #         print(name,x)      
+    model.features[-1] = nn.Linear(model.C_prev, NUM_CLASSES_410)
+    # model.features[-1] = nn.Linear(62208, NUM_CLASSES_410)
+    # net.features[15] = nn.Conv2d(96, 128, 1, 1) 
+    
     for param in model.parameters(): # Freez all model weights
       param.requires_grad = False
     for param in model.classifier.parameters(): # Un-freez the final classifier
