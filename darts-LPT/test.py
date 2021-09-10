@@ -21,11 +21,11 @@ import mendely_dataloader as loader
 
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--data', type=str, default='../data', help='location of the data corpus')
-parser.add_argument('--batch_size', type=int, default=10, help='batch size')
+parser.add_argument('--batch_size', type=int, default=8, help='batch size')
 parser.add_argument('--report_freq', type=float, default=50, help='report frequency')
 parser.add_argument('--gpu', type=int, default=0, help='gpu device id')
 parser.add_argument('--init_channels', type=int, default=36, help='num of init channels')
-parser.add_argument('--layers', type=int, default=20, help='total number of layers')
+parser.add_argument('--layers', type=int, default=12, help='total number of layers')
 parser.add_argument('--model_path', type=str, default='EXP/model.pt', help='path of pretrained model')
 parser.add_argument('--auxiliary', action='store_false', default=True, help='use auxiliary tower')
 parser.add_argument('--cutout', action='store_true', default=False, help='use cutout')
@@ -35,7 +35,9 @@ parser.add_argument('--seed', type=int, default=0, help='random seed')
 parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='which architecture to use')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/BCCD_Reorganized/', help='location of the data corpus')
-parser.add_argument('--dataset_path', type=str, default='../kaggle/PBC_dataset/PBC_dataset/wbc_resized/', help='location of the data corpus')
+# parser.add_argument('--dataset_path', type=str, default='../kaggle/PBC_dataset/PBC_dataset/wbc_resized/', help='location of the data corpus')
+# parser.add_argument('--dataset_path', type=str, default='../BCCD_Dataset/BCCD_410', help='location of the data corpus')
+parser.add_argument('--dataset_410', type=int, default=0, help='Whether use BCCD_410 Dataset')
 args = parser.parse_args()
 
 log_format = '%(asctime)s %(message)s'
@@ -82,9 +84,14 @@ def main():
   # train_data, test_data, valid_data = custom_dataset.parse_dataset(dataset_path)
   # _, test_queue = custom_dataset.preprocess_data(train_data, test_data, args.batch_size)
 
-  ## For Loading Mendely PBC_dataset
-  dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
   
+  if args.dataset_410 == 1:
+    ## For Loading Mendely PBC_dataset
+    dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2, 
+      data_dir='../BCCD_Dataset/BCCD_410')
+  else:
+    dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
+
   model.drop_path_prob = args.drop_path_prob
   test_acc, test_obj = infer(dataloaders[-1], model, criterion)
   logging.info('test_acc %f', test_acc)
