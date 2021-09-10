@@ -41,4 +41,5 @@ cd ../Val && pwd
 org_dir
 
 cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
-python test.py --model_path ./eval-BC-50-300-PBC-20210831-183328/weights.pt --arch DARTS_TS_BC_50EPOCH --batch_size 8 --layers 12 
+# --batch_size 8 --layers 12
+python test.py --model_path ./eval-PBC-darts-off-50-20210908-092014/weights.pt --arch DARTS_OFF_PBC_50 --dataset_410 1

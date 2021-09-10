@@ -60,6 +60,15 @@ python test.py --model_path ./eval-BC-50-300-PBC-20210831-183328/weights.pt --ar
     # 09/02 02:55:41 AM test 100 1.724381e-02 99.752475 100.000000
     # 09/02 02:55:50 AM test_acc 99.816176
 
+#---------------------------
+# DARTS_OFF_PBC_50 (50 epochs saerching, 120 epochs evaluation)
+python test.py --model_path ./eval-PBC-darts-off-50-20210908-092014/weights.pt --arch DARTS_OFF_PBC_50 --batch_size 8 --layers 12 
+
+# DARTS_LPT_PBC_50
+
+# PDARTS_OFF_PBC_50
+
+# PARTS_OFF_PBC_50
 
 
 
