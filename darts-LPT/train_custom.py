@@ -98,7 +98,10 @@ def main():
   # Fine tune for the BCCD_410 dataset
   if args.fine_tune:
     utils.load(model, args.model_path)
-    model = nn.Sequential(model. nn.Linear(NUM_CLASSES, NUM_CLASSES_410))
+
+    model.classifier = nn.Linear(model.C_prev, NUM_CLASSES_410)
+
+    # model = nn.Sequential(model. nn.Linear(NUM_CLASSES, NUM_CLASSES_410))
 
     # for name, child in model.named_children():
     #     for x, y in child.named_children():
