@@ -113,7 +113,6 @@ def main():
     # modules[-1] = nn.Linear(model.C_prev, NUM_CLASSES_410)
 
     for param in model.parameters(): # Freez all model weights
-      print(param)
       param.requires_grad = False
     for param in model.classifier.parameters(): # Un-freez the final classifier
       param.requires_grad = True
