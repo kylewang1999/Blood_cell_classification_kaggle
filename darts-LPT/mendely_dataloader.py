@@ -34,6 +34,7 @@ def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_sp
         dataloaders = [None, None]
         dataset = torchvision.datasets.ImageFolder(root=os.path.join(data_dir), transform=transform)
         dataloaders.append(data.DataLoader(dataset, batch_size=batch_size, shuffle=True,  num_workers=num_workers))
+        return dataloaders
 
     if not train_search:
         for split in splits:
