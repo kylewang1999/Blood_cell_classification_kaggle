@@ -36,7 +36,7 @@ parser.add_argument('--arch', type=str, default='DARTS_CIFAR10_TS_1ST', help='wh
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/BCCD_Reorganized/', help='location of the data corpus')
 # parser.add_argument('--dataset_path', type=str, default='../kaggle/PBC_dataset/PBC_dataset/wbc_resized/', help='location of the data corpus')
-# parser.add_argument('--dataset_path', type=str, default='../BCCD_Dataset/BCCD_410', help='location of the data corpus')
+# parser.add_argument('--dataset_path', type=str, default='../kaggle/BCCD_Dataset/BCCD_410', help='location of the data corpus')
 parser.add_argument('--dataset_410', type=int, default=0, help='Whether use BCCD_410 Dataset')
 args = parser.parse_args()
 
@@ -88,7 +88,7 @@ def main():
   if args.dataset_410 == 1:
     ## For Loading Mendely PBC_dataset
     dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2, 
-      data_dir='../BCCD_Dataset/BCCD_410')
+      data_dir='../kaggle/BCCD_Dataset/BCCD_410')
   else:
     dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
 
