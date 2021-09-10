@@ -46,6 +46,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO,
 
 # CIFAR_CLASSES = 10
 NUM_CLASSES = 8
+NUM_CLASSES_4 = 4
 
 def main():
   if not torch.cuda.is_available():
@@ -63,7 +64,10 @@ def main():
   logging.info("args = %s", args)
 
   genotype = eval("genotypes.%s" % args.arch)
-  model = Network(args.init_channels, NUM_CLASSES, args.layers, args.auxiliary, genotype)
+  if args.dataset_410 == 1:
+    model = Network(args.init_channels, NUM_CLASSES_4, args.layers, args.auxiliary, genotype)
+  else:
+    model = Network(args.init_channels, NUM_CLASSES, args.layers, args.auxiliary, genotype)
   model = model.cuda()
   utils.load(model, args.model_path)
 
