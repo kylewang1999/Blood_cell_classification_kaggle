@@ -33,12 +33,12 @@ org_dir () {
     mkdir platelet
 }
 
-cd PBC_dataset_split/PBC_dataset_split/Train && pwd
-org_dir
-cd ../Test && pwd
-org_dir
-cd ../Val && pwd
-org_dir
+# cd PBC_dataset_split/PBC_dataset_split/Train && pwd
+# org_dir
+# cd ../Test && pwd
+# org_dir
+# cd ../Val && pwd
+# org_dir
 
 cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
 # --batch_size 8 --layers 12

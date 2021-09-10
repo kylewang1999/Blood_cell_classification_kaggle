@@ -22,10 +22,18 @@ def get_dataloaders(data_dir : str = '../kaggle/PBC_dataset_split/PBC_dataset_sp
                             std=[0.229, 0.224, 0.225] )
         ])
 
+    
+
     # 64% | 24% | 12%
     # splits = ['Train','Val', 'Test']
     splits = ['Train','Test', 'Val']
     dataloaders = []
+
+    if data_dir == '../BCCD_Dataset/BCCD_410':
+        # Using BCCD_410 Dataset only for testing
+        dataloaders = [None, None]
+        dataset = torchvision.datasets.ImageFolder(root=os.path.join(data_dir), transform=transform)
+        dataloaders.append(data.DataLoader(dataset, batch_size=batch_size, shuffle=True,  num_workers=num_workers))
 
     if not train_search:
         for split in splits:
