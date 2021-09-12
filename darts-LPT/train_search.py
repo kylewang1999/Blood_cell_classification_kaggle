@@ -16,7 +16,8 @@ import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 from model_search import Network
 from architect import Architect
-import mendely_dataloader as loader
+# import mendely_dataloader as loader
+import bccd410_dataloader as loader
 
 
 parser = argparse.ArgumentParser("cifar")
@@ -60,7 +61,7 @@ logging.getLogger().addHandler(fh)
 
 # CIFAR_CLASSES = 10
 # CIFAR100_CLASSES = 100
-NUM_CLASSES = 8
+NUM_CLASSES = 5
 
 
 def main():
@@ -128,7 +129,7 @@ def main():
   if args.local_mount == 0:
     dataloaders = loader.get_dataloaders(batch_size = args.batch_size, train_search=True)
   else:
-    path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+    path = '/local/kaggle/BCCD_Dataset/BCCD_410_split'
     dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
 
   torch.cuda.empty_cache()
