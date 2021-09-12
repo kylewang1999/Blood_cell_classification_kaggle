@@ -14,12 +14,12 @@ spec:
         # memory: "3Gi"
         memory: "100M"
         cpu: "1"
-        # nvidia.com/gpu: "1"
+        nvidia.com/gpu: "1"
       limits:
         # memory: "3Gi"
         memory: "100M"
         cpu: "1"
-        # nvidia.com/gpu: "1"
+        nvidia.com/gpu: "1"
     volumeMounts:
     - name: local
       mountPath: /local
