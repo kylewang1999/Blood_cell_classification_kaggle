@@ -10,6 +10,6 @@ alias kubeexec="kubectl exec -it k5wang-login bash"
 alias exe="kubeexec"
 alias p="pwd"
 alias chdir="cd k5wang-volume/Blood_cell_classification_kaggle/darts-LPT/"
-
+alias des="kubectl describe pod k5wang-login"
 #/k5wang-volume/Blood_cell_classification_kaggle/cluster
 #/k5wang-volume/Blood_cell_classification_kaggle/darts-LPT/search-GPU1080-20210725-084552#

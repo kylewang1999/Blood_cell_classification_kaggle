@@ -5,18 +5,21 @@ metadata:
 spec:
   containers:
   - name: vol-container
-    image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
+    # image: gitlab-registry.nautilus.optiputer.net/vamsirk/research-containers
+    image: 'gitlab-registry.nrp-nautilus.io/prp/jupyter-stack/prp'
     command: ["/bin/bash"]
     args: ["-c", "sleep infinity"]
     resources:
       requests:
-        memory: "3Gi"
+        # memory: "3Gi"
+        memory: "100M"
         cpu: "1"
-        nvidia.com/gpu: "1"
+        # nvidia.com/gpu: "1"
       limits:
-        memory: "3Gi"
+        # memory: "3Gi"
+        memory: "100M"
         cpu: "1"
-        nvidia.com/gpu: "1"
+        # nvidia.com/gpu: "1"
     volumeMounts:
     - name: local
       mountPath: /local
@@ -34,8 +37,8 @@ spec:
     - name: k5wang-volume-datasets
       persistentVolumeClaim:
         claimName: k5wang-volume-datasets
-  nodeSelector:
-    gpu-type: "1080Ti"
+  # nodeSelector:
+    # gpu-type: "1080Ti"
     # gpu-type: "2080Ti"
 
 

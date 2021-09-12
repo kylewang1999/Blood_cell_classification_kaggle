@@ -19,7 +19,8 @@ from architect_ts import Architect
 from teacher import *
 from teacher_update import *
 import custom_dataset
-import mendely_dataloader as loader
+# import mendely_dataloader as loader
+import bccd410_dataloader as loader
 
 
 parser = argparse.ArgumentParser("cifar")
@@ -82,8 +83,6 @@ parser.add_argument('--is_parallel', type=int, default=0)
 parser.add_argument('--teacher_arch', type=str, default='18')
 parser.add_argument('--is_cifar100', type=int, default=0)
 parser.add_argument('--dataset_path', type=str, default='/local/kaggle/blood_cell/', help='location of the data corpus')
-# parser.add_argument('--dataset_path', type=str, default='../kaggle/blood_cell/', help='location of the data corpus')
-# parser.add_argument('--dataset_path', type=str, default='/content/drive/MyDrive/kaggle/blood_cell/', help='location of the data corpus')
 parser.add_argument('--local_mount', type=int, default=1, help='1 use /local on kubectl, 0 use persistent volume')
 args = parser.parse_args()
 
@@ -100,7 +99,7 @@ logging.getLogger().addHandler(fh)
 
 # CIFAR_CLASSES = 10
 # CIFAR100_CLASSES = 100
-NUM_CLASSES = 8
+NUM_CLASSES = 5
 
 
 def main():
@@ -194,7 +193,8 @@ def main():
   if args.local_mount == 0:
     dataloaders = loader.get_dataloaders(batch_size = args.batch_size, train_search=True)
   else:
-    path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+    # path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+    path = '/local/kaggle/BCCD_Dataset/BCCD_410_split'
     dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
   
   torch.cuda.empty_cache()  # Clear GPU Memory
