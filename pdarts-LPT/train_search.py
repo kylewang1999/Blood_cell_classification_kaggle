@@ -16,7 +16,8 @@ import copy
 from model_search import Network
 from genotypes import PRIMITIVES
 from genotypes import Genotype
-import mendely_dataloader as loader
+# import mendely_dataloader as loader
+import bccd410_dataloader as loader
 
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--workers', type=int, default=2, help='number of workers to load dataset')
@@ -63,7 +64,7 @@ logging.getLogger().addHandler(fh)
 # else:
 #     CIFAR_CLASSES = 10
 #     data_folder = 'cifar-10-batches-py'
-NUM_CLASSES = 8
+NUM_CLASSES = 5
 
 def main():
     if not torch.cuda.is_available():
@@ -87,7 +88,8 @@ def main():
     if args.local_mount == 0:
         dataloaders = loader.get_dataloaders(batch_size = args.batch_size, train_search=True)
     else:
-        path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+        # path = '/local/kaggle/PBC_dataset_split/PBC_dataset_split'
+        path = '/local/kaggle/BCCD_Dataset/BCCD_410_split'
         dataloaders = loader.get_dataloaders(batch_size=args.batch_size, train_search=True, data_dir=path)
     torch.cuda.empty_cache()  # Clear GPU Memory
 
