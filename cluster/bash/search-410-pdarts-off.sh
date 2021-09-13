@@ -11,7 +11,7 @@ ls
 
 # Organize Data Dir
 
-cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
+cd /k5wang-volume/Blood_cell_classification_kaggle/pdarts-LPT
 pwd
 echo Copying DONE.
 duration=$SECONDS
