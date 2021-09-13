@@ -20,6 +20,4 @@ echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
 
 # Default: --batch_size 4 --layers 12 --epochs 300
-python train_custom.py --arch DARTS_OFF_410_50 --save 410-darts-off-50
-
-
+python train_custom.py --arch PDARTS_OFF_410_50 --save 410-pdarts-off-50

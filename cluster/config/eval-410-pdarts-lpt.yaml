@@ -1,0 +1,60 @@
+apiVersion: batch/v1
+kind: Job # Deployment will automatically restart when killed. Use Pod if not needed
+metadata:
+  name: k5wang-eval-410-pdarts-lpt
+  namespace: ecepxie
+spec:
+  template:
+    metadata:
+      labels:
+        name: k5wang-train
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: research
+        image: gitlab-registry.nrp-nautilus.io/prp/jupyter-stack/prp
+        imagePullPolicy: Always
+        workingDir: /local
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/eval-410-pdarts-lpt.sh"]
+        resources:
+          requests:
+            memory: "3Gi"
+            cpu: "1"
+            nvidia.com/gpu: 1
+          limits:
+            memory: "3Gi"
+            cpu: "1"
+            nvidia.com/gpu: 1
+
+        volumeMounts:
+        - name: k5wang-volume     #use your own volume path
+          mountPath: /k5wang-volume
+        - name: k5wang-volume-datasets
+          mountPath: /k5wang-volume-datasets
+        - name: local
+          mountPath: /local
+    
+      volumes:
+        - name: k5wang-volume
+          persistentVolumeClaim:
+            claimName: k5wang-volume
+        - name: k5wang-volume-datasets
+          persistentVolumeClaim:
+            claimName: k5wang-volume-datasets
+        - name: local
+          emptyDir: {}
+      
+      nodeSelector:
+        # gpu-type: "1080Ti"
+        gpu-type: "2080Ti"
+        nautilus.io/disktype: nvme   
+
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: gpu-type
+      #           operator: In # Use NotIn for other types
+      #           values:
+      #           - TITANRTX
