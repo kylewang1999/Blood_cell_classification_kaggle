@@ -20,7 +20,9 @@ from torch.autograd import Variable
 from model import NetworkCIFAR as Network # Trains the network in model.py 
 from model import NetworkHybrid as NetworkHybrid
 # import custom_dataset
-import mendely_dataloader as loader
+# import mendely_dataloader as loader
+import bccd410_dataloader as loader
+
 
 
 parser = argparse.ArgumentParser("cifar")
@@ -31,7 +33,7 @@ parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
 parser.add_argument('--weight_decay', type=float, default=3e-4, help='weight decay')
 parser.add_argument('--report_freq', type=float, default=50, help='report frequency')
 parser.add_argument('--gpu', type=int, default=0, help='gpu device id')
-parser.add_argument('--epochs', type=int, default=120, help='num of training epochs')
+parser.add_argument('--epochs', type=int, default=300, help='num of training epochs')
 parser.add_argument('--init_channels', type=int, default=36, help='num of init channels')
 parser.add_argument('--layers', type=int, default=12, help='total number of layers')
 parser.add_argument('--model_path', type=str, default='saved_models', help='path to save the model')
@@ -67,8 +69,7 @@ logging.getLogger().addHandler(fh)
 
 # CIFAR_CLASSES = 10
 # CIFAR100_CLASSES = 100
-NUM_CLASSES = 8
-NUM_CLASSES_410 = 5
+NUM_CLASSES = 5
 
 def save_checkpoint(state, checkpoint=args.save, filename='checkpoint.pth.tar'):
     filepath = os.path.join(checkpoint, filename)
@@ -142,7 +143,8 @@ def main():
     if args.local_mount == 0:
       dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
     else:
-      dataloaders = loader.get_dataloaders(data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split',batch_size = args.batch_size, num_workers = 2)
+      dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2,
+        data_dir='/local/kaggle/BCCD_Dataset/BCCD_410_split')
     
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))

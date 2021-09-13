@@ -11,14 +11,15 @@ ls
 
 # Organize Data Dir
 
-cd /k5wang-volume/Blood_cell_classification_kaggle/pdarts-LPT
+cd /k5wang-volume/Blood_cell_classification_kaggle/darts-LPT
 pwd
 echo Copying DONE.
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
-python train_search.py --batch_size 4 --epochs 50 --note 410-pdarts-off
 
 
+# Default: --batch_size 4 --layers 12 --epochs 300
+python train_custom.py --arch DARTS_LPT_410_50 --save 410-darts-lpt-50
 
 
