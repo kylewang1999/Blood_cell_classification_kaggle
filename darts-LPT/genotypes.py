@@ -13,6 +13,14 @@ PRIMITIVES = [
     'dil_conv_5x5'
 ]
 
+DARTS_OFF_410_50 = Genotype(
+        normal=[('dil_conv_3x3', 0), ('skip_connect', 1), ('sep_conv_3x3', 0), 
+        ('skip_connect', 1), ('sep_conv_3x3', 1), ('skip_connect', 2), 
+        ('dil_conv_3x3', 4), ('sep_conv_3x3', 3)], normal_concat=range(2, 6), 
+        reduce=[('dil_conv_3x3', 1), ('dil_conv_3x3', 0), ('sep_conv_5x5', 1), 
+        ('sep_conv_5x5', 2), ('dil_conv_5x5', 3), ('dil_conv_3x3', 2), 
+        ('sep_conv_5x5', 3), ('sep_conv_5x5', 1)], reduce_concat=range(2, 6))
+
 # Searched using darts-official on Mendely PBC dataset for 50 epochs
 DARTS_OFF_PBC_50 = Genotype(
         normal=[('dil_conv_5x5', 0), ('dil_conv_3x3', 1), ('sep_conv_3x3', 2), 

@@ -17,7 +17,7 @@ echo Copying DONE.
 duration=$SECONDS
 echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
-python train_search.py --batch_size 4 --epochs 50 --save 410-pdarts-off
+python train_search.py --batch_size 4 --epochs 50 --note 410-pdarts-off
 
 
 
