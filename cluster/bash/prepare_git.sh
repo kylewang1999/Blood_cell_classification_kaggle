@@ -1,3 +1,3 @@
 sudo git config --global user.email "kaiyuan.kylewang@gmaill.com"
 sudo git config --global user.name "kylewang1999"
-sudo git pull
+sudo git pull -m merge remote with cluster
