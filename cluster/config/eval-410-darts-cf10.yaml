@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job # Deployment will automatically restart when killed. Use Pod if not needed
 metadata:
-  name: k5wang-eval-410-darts-off
+  name: k5wang-eval-410-darts-cf10
   namespace: ecepxie
 spec:
   template:
@@ -15,7 +15,7 @@ spec:
         image: gitlab-registry.nrp-nautilus.io/prp/jupyter-stack/prp
         imagePullPolicy: Always
         workingDir: /local
-        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/eval-410-darts-off.sh"]
+        command: ["/bin/bash", "/k5wang-volume/Blood_cell_classification_kaggle/cluster/bash/eval-410-darts-cf10.sh"]
         resources:
           requests:
             memory: "3Gi"
@@ -58,3 +58,4 @@ spec:
       #           operator: In # Use NotIn for other types
       #           values:
       #           - TITANRTX
+
