@@ -45,8 +45,8 @@ spec:
           emptyDir: {}
       
       nodeSelector:
-        # gpu-type: "1080Ti"
-        gpu-type: "2080Ti"
+        gpu-type: "1080Ti"
+        # gpu-type: "2080Ti"
         nautilus.io/disktype: nvme   
 
       # affinity:
