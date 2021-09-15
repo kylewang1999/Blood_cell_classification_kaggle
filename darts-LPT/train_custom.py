@@ -20,8 +20,8 @@ from torch.autograd import Variable
 from model import NetworkCIFAR as Network # Trains the network in model.py 
 from model import NetworkHybrid as NetworkHybrid
 # import custom_dataset
-import mendely_dataloader as loader
-# import bccd410_dataloader as loader
+# import mendely_dataloader as loader
+import bccd410_dataloader as loader
 
 
 
@@ -69,8 +69,8 @@ logging.getLogger().addHandler(fh)
 
 # CIFAR_CLASSES = 10
 # CIFAR100_CLASSES = 100
-NUM_CLASSES = 8
-# NUM_CLASSES = 5
+# NUM_CLASSES = 8
+NUM_CLASSES = 5
 
 def save_checkpoint(state, checkpoint=args.save, filename='checkpoint.pth.tar'):
     filepath = os.path.join(checkpoint, filename)
@@ -145,7 +145,8 @@ def main():
       dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2)
     else:
       dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2,
-        data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split')
+        # data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split')
+        data_dir='local/kaggle/BCCD_Dataset/BCCD_410_split')
     
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
