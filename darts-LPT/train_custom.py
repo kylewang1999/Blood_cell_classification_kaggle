@@ -146,7 +146,7 @@ def main():
     else:
       dataloaders = loader.get_dataloaders(batch_size = args.batch_size, num_workers = 2,
         # data_dir='/local/kaggle/PBC_dataset_split/PBC_dataset_split')
-        data_dir='local/kaggle/BCCD_Dataset/BCCD_410_split')
+        data_dir='/local/kaggle/BCCD_Dataset/BCCD_410_split')
     
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, float(args.epochs))
